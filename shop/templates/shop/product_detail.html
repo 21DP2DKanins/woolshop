@@ -1,0 +1,131 @@
+{% extends 'shop/ground.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - Wool Haven{% endblock %}
+
+{% block content %}
+<!-- Product Detail -->
+<section class="container mx-auto px-4 py-12">
+    <div class="flex flex-col md:flex-row">
+        <!-- Product Images -->
+        <div class="md:w-1/2 mb-8 md:mb-0">
+            <div class="grid grid-cols-1 gap-4">
+                <div class="mb-4">
+                    <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="w-full h-auto">
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                    {% for image in product.images.all %}
+                    <div class="cursor-pointer">
+                        <img src="{{ image.url }}" alt="{{ product.name }}" class="w-full h-auto border hover:border-wool-brown">
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Product Info -->
+        <div class="md:w-1/2 md:pl-12">
+            <h1 class="text-2xl font-serif mb-2">{{ product.name }}</h1>
+            <p class="text-xl text-wool-gray mb-6">{{ product.price }} ₽</p>
+            
+            <div class="mb-6">
+                <h3 class="font-medium mb-2">Описание</h3>
+                <p class="text-wool-gray">{{ product.description }}</p>
+            </div>
+            
+            <div class="mb-6">
+                <h3 class="font-medium mb-2">Состав</h3>
+                <p class="text-wool-gray">{{ product.composition }}</p>
+            </div>
+            
+            {% if product.has_sizes %}
+            <div class="mb-6">
+                <h3 class="font-medium mb-2">Размер</h3>
+                <div class="flex space-x-2">
+                    {% for size in product.available_sizes %}
+                    <button class="border border-gray-300 px-4 py-2 hover:border-wool-brown focus:border-wool-brown focus:outline-none {% if size == 'M' %}border-wool-brown{% endif %}">
+                        {{ size }}
+                    </button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            {% if product.has_colors %}
+            <div class="mb-6">
+                <h3 class="font-medium mb-2">Цвет</h3>
+                <div class="flex space-x-2">
+                    {% for color in product.available_colors %}
+                    <button class="w-8 h-8 rounded-full border {% if color.selected %}border-wool-brown ring-2 ring-wool-brown ring-offset-1{% else %}border-gray-300{% endif %}" style="background-color: {{ color.code }};" title="{{ color.name }}"></button>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <div class="mb-8">
+                <div class="flex items-center mb-4">
+                    <div class="flex border border-gray-300">
+                        <button class="px-3 py-1 border-r border-gray-300 hover:bg-gray-100">-</button>
+                        <input type="number" value="1" min="1" class="w-12 text-center focus:outline-none">
+                        <button class="px-3 py-1 border-l border-gray-300 hover:bg-gray-100">+</button>
+                    </div>
+                </div>
+                
+                <button class="w-full bg-wool-brown text-white py-3 hover:bg-opacity-90 transition-colors mb-3">ДОБАВИТЬ В КОРЗИНУ</button>
+                <button class="w-full border border-wool-brown text-wool-brown py-3 hover:bg-wool-cream transition-colors">ДОБАВИТЬ В ИЗБРАННОЕ</button>
+            </div>
+            
+            <div class="border-t border-gray-200 pt-6">
+                <div class="mb-4">
+                    <button class="flex justify-between items-center w-full text-left py-2 focus:outline-none">
+                        <span class="font-medium">Доставка</span>
+                        <i class="fas fa-chevron-down text-wool-gray"></i>
+                    </button>
+                    <div class="text-wool-gray text-sm py-2">
+                        <p>Доставка по России от 300 ₽. Бесплатная доставка при заказе от 5000 ₽.</p>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <button class="flex justify-between items-center w-full text-left py-2 focus:outline-none">
+                        <span class="font-medium">Возврат</span>
+                        <i class="fas fa-chevron-down text-wool-gray"></i>
+                    </button>
+                    <div class="text-wool-gray text-sm py-2">
+                        <p>Возврат товара в течение 14 дней с момента получения.</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <button class="flex justify-between items-center w-full text-left py-2 focus:outline-none">
+                        <span class="font-medium">Уход</span>
+                        <i class="fas fa-chevron-down text-wool-gray"></i>
+                    </button>
+                    <div class="text-wool-gray text-sm py-2">
+                        <p>Ручная стирка при температуре не выше 30°C. Не отбеливать. Сушить в горизонтальном положении.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Products -->
+<section class="container mx-auto px-4 py-12 bg-wool-cream">
+    <h2 class="text-2xl font-serif text-center mb-8">Вам также может понравиться</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {% for product in related_products %}
+        <div class="group">
+            <div class="relative overflow-hidden mb-4">
+                <img src="{{ product.main_image.url }}" alt="{{ product.name }}" class="w-full h-80 object-cover">
+                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                    <a href="{{ product.get_absolute_url }}" class="bg-white px-4 py-2 text-sm">БЫСТРЫЙ ПРОСМОТР</a>
+                </div>
+            </div>
+            <h3 class="font-medium">{{ product.name }}</h3>
+            <p class="text-wool-gray">{{ product.price }} ₽</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

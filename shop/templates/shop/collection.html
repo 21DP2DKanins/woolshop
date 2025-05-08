@@ -1,0 +1,153 @@
+{% extends 'shop/ground.html' %}
+{% load static %}
+
+{% block title %}Магазин - Wool Haven{% endblock %}
+
+{% block content %}
+<!-- Shop Banner -->
+<section class="container mx-auto px-4 py-6">
+    <div class="relative">
+        <img src="{% static 'images/shop-banner.jpg' %}" alt="Коллекция шерстяных изделий" class="w-full h-64 object-cover">
+        <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+            <h1 class="text-3xl font-serif text-white">Наша коллекция</h1>
+        </div>
+    </div>
+</section>
+
+<!-- Shop Content -->
+<section class="container mx-auto px-4 py-12">
+    <div class="flex flex-col md:flex-row">
+        <!-- Sidebar -->
+        <div class="md:w-1/4 mb-8 md:mb-0 md:pr-8">
+            <h2 class="text-xl font-serif mb-6">Категории</h2>
+            <ul class="space-y-2 mb-8">
+                <li><a href="/" class="text-wool-brown font-medium">Все товары</a></li>
+                <li><a href="/" class="text-wool-gray hover:text-wool-brown transition-colors">Свитера</a></li>
+                <li><a href="/" class="text-wool-gray hover:text-wool-brown transition-colors">Шарфы и шапки</a></li>
+                <li><a href="/" class="text-wool-gray hover:text-wool-brown transition-colors">Пледы и одеяла</a></li>
+                <li><a href="/" class="text-wool-gray hover:text-wool-brown transition-colors">Новинки</a></li>
+                <li><a href="/" class="text-wool-gray hover:text-wool-brown transition-colors">Распродажа</a></li>
+            </ul>
+            
+            <h2 class="text-xl font-serif mb-6">Фильтры</h2>
+            <form method="get">
+                <div class="mb-6">
+                    <h3 class="font-medium mb-3">Цена</h3>
+                    <div class="flex items-center space-x-2">
+                        <input type="number" name="min_price" placeholder="От" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:border-wool-brown" value="{{ request.GET.min_price }}">
+                        <span>-</span>
+                        <input type="number" name="max_price" placeholder="До" class="w-full border border-gray-300 px-3 py-2 focus:outline-none focus:border-wool-brown" value="{{ request.GET.max_price }}">
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-medium mb-3">Цвет</h3>
+                    <div class="grid grid-cols-4 gap-2">
+                        {% for color in colors %}
+                        <div class="flex items-center">
+                            <input type="checkbox" id="color-{{ color.id }}" name="color" value="{{ color.id }}" class="mr-2" {% if color.id|stringformat:"i" in request.GET.color|default:"" %}checked{% endif %}>
+                            <label for="color-{{ color.id }}" class="flex items-center">
+                                <span class="w-4 h-4 rounded-full mr-1" style="background-color: {{ color.code }};"></span>
+                                <span class="text-sm text-wool-gray">{{ color.name }}</span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h3 class="font-medium mb-3">Размер</h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for size in sizes %}
+                        <div class="flex items-center">
+                            <input type="checkbox" id="size-{{ size }}" name="size" value="{{ size }}" class="mr-2" {% if size in request.GET.size|default:"" %}checked{% endif %}>
+                            <label for="size-{{ size }}" class="text-sm text-wool-gray">{{ size }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full bg-wool-brown text-white py-2 hover:bg-opacity-90 transition-colors">ПРИМЕНИТЬ</button>
+            </form>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="md:w-3/4">
+            <div class="flex justify-between items-center mb-8">
+                <p class="text-wool-gray">Показано {{ products.start_index }} - {{ products.end_index }} из {{ paginator.count }} товаров</p>
+                <div class="flex items-center">
+                    <label for="sort" class="mr-2 text-wool-gray">Сортировать:</label>
+                    <select id="sort" name="sort" class="border border-gray-300 px-3 py-1 focus:outline-none focus:border-wool-brown">
+                        <option value="newest" {% if sort == 'newest' %}selected{% endif %}>Новинки</option>
+                        <option value="price_asc" {% if sort == 'price_asc' %}selected{% endif %}>Цена (по возрастанию)</option>
+                        <option value="price_desc" {% if sort == 'price_desc' %}selected{% endif %}>Цена (по убыванию)</option>
+                        <option value="name_asc" {% if sort == 'name_asc' %}selected{% endif %}>По названию (А-Я)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for product in products %}
+                <div class="group">
+                    <div class="relative overflow-hidden mb-4">
+                        
+                        <img src="{{ product.image }}" alt="{{ product.name }}" class="w-full h-80 object-cover">
+                        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
+                            <a href="{{ product.get_absolute_url }}" class="bg-white px-4 py-2 text-sm">БЫСТРЫЙ ПРОСМОТР</a>
+                        </div>
+                        {% if product.is_new %}
+                        <div class="absolute top-2 left-2 bg-wool-brown text-white text-xs px-2 py-1">НОВИНКА</div>
+                        {% endif %}
+                        {% if product.is_sale %}
+                        <div class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1">СКИДКА</div>
+                        {% endif %}
+                    </div>
+                    <h3 class="font-medium">{{ product.name }}</h3>
+                    <div class="flex items-center">
+                        {% if product.is_sale %}
+                        <p class="text-red-500 mr-2">{{ product.sale_price }} ₽</p>
+                        <p class="text-wool-gray line-through text-sm">{{ product.price }} ₽</p>
+                        {% else %}
+                        <p class="text-wool-gray">{{ product.price }} ₽</p>
+                        {% endif %}
+                    </div>
+                    <button class="add-to-cart-btn" data-id="{{ product.id }}">В корзину</button>
+                </div>
+                {% empty %}
+                <div class="col-span-3 text-center py-12">
+                    <p class="text-wool-gray text-lg">Товары не найдены</p>
+                    <p class="text-wool-gray mt-2">Попробуйте изменить параметры фильтрации</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Pagination -->
+            {% if products.has_other_pages %}
+            <div class="flex justify-center mt-12">
+                <div class="flex space-x-1">
+                    {% if products.has_previous %}
+                    <a href="?page={{ products.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="border border-gray-300 px-3 py-1 hover:border-wool-brown">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                    {% endif %}
+                    
+                    {% for num in paginator.page_range %}
+                    {% if num == products.number %}
+                    <span class="border border-wool-brown bg-wool-brown text-white px-3 py-1">{{ num }}</span>
+                    {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                    <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="border border-gray-300 px-3 py-1 hover:border-wool-brown">{{ num }}</a>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if products.has_next %}
+                    <a href="?page={{ products.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" class="border border-gray-300 px-3 py-1 hover:border-wool-brown">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
