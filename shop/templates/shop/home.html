@@ -1,64 +1,164 @@
-{% extends "shop/ground.html" %}
-{% load static %}
+{% extends 'shop/base.html' %}
+
+{% block title %}Life Etc. - Women's Apparel Brand{% endblock %}
 
 {% block content %}
-<!-- Header -->
-<header class="flex items-center justify-between py-4 px-6 bg-white shadow-md">
-  <a href="/" class="text-2xl font-bold">МойЛоготип</a>
-  <nav class="hidden md:flex space-x-6">
-    <a href="{% url 'home' %}" class="hover:text-blue-600">Главная</a>
-    <a href="{% url 'about' %}" class="hover:text-blue-600">О нас</a>
-    <a href="{% url 'contact' %}" class="hover:text-blue-600">Контакты</a>
-  </nav>
-  <!-- Burger icon -->
-  <button id="burger" class="md:hidden focus:outline-none">
-    <span class="block w-6 h-0.5 bg-gray-800 mb-1"></span>
-    <span class="block w-6 h-0.5 bg-gray-800 mb-1"></span>
-    <span class="block w-6 h-0.5 bg-gray-800"></span>
-  </button>
-</header>
+<div class="container mx-auto px-4">
+    <!-- Brand Tagline -->
+    <div class="text-center my-8">
+        <div class="flex items-center justify-center">
+            <div class="w-1/4 h-px bg-gray-300"></div>
+            <h2 class="px-4 text-sm text-gray-600 uppercase tracking-wider">WOMEN'S APPAREL BRAND</h2>
+            <div class="w-1/4 h-px bg-gray-300"></div>
+        </div>
+    </div>
+    
+    <!-- Hero Slider -->
+    <div class="relative overflow-hidden" id="hero-slider">
+        <div class="flex transition-transform duration-500" id="slider-container">
+            <div class="w-full flex-shrink-0">
+                <img src="https://soliloquywp.com/wp-content/uploads/2013/05/action-backlit-beach-1046896.jpg" alt="Hero Image" class="w-full h-[500px] object-cover">
+            </div>
+            <div class="w-full flex-shrink-0">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDyMzx1SrWytCI_Jen5yiflDYRGfqpLwpj_w&s" alt="Hero Image" class="w-full h-[500px] object-cover">
+            </div>
+            <div class="w-full flex-shrink-0">
+                <img src="#" alt="Hero Image" class="w-full h-[500px] object-cover">
+            </div>
+        </div>
+        
+        <!-- Slider Navigation Dots -->
+        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            <button class="w-2 h-2 rounded-full bg-white opacity-50 slider-dot active" data-index="0"></button>
+            <button class="w-2 h-2 rounded-full bg-white opacity-50 slider-dot" data-index="1"></button>
+            <button class="w-2 h-2 rounded-full bg-white opacity-50 slider-dot" data-index="2"></button>
+            <button class="w-2 h-2 rounded-full bg-white opacity-50 slider-dot" data-index="3"></button>
+        </div>
+    </div>
+    
+    <!-- Featured Items Section -->
+    <div class="my-16">
+        <div class="text-center mb-12">
+            <div class="flex items-center justify-center">
+                <div class="w-1/4 h-px bg-gray-300"></div>
+                <h2 class="px-4 text-sm text-gray-600 uppercase tracking-wider">FEATURED ITEMS</h2>
+                <div class="w-1/4 h-px bg-gray-300"></div>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {% for product in products %}
+            <div class="product-card">
+                <div class="relative group">
+                    <a href="/">
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-80 object-cover">
+                        {% if product.on_sale %}
+                        <div class="absolute top-2 right-2 bg-green-600 text-white text-xs px-2 py-1">
+                            Sale
+                        </div>
+                        {% endif %}
+                        {% if product.is_new %}
+                        <div class="absolute top-2 right-2 bg-gray-800 text-white text-xs px-2 py-1">
+                            New
+                        </div>
+                        {% endif %}
+                    </a>
+                </div>
+                <div class="mt-4 text-center">
+                    <h3 class="text-sm font-medium">{{ product.name }}</h3>
+                    <p class="text-sm text-gray-600">${{ product.price }}</p>
+                </div>
+                <div class="mt-2">
+                    <button class="w-full btn add-to-cart" data-product-id="{{ product.id }}">
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-3 text-center py-8">
+                <p>No featured products available.</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-8">
+            <a href="{% url 'collection' %}" class="inline-block btn">Shop All</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-<!-- Mobile menu -->
-<nav id="mobileMenu" class="hidden flex-col px-6 pb-4 bg-white space-y-2 md:hidden">
-  <a href="{% url 'home' %}" class="block">Главная</a>
-  <a href="{% url 'about' %}" class="block">О нас</a>
-  <a href="{% url 'contact' %}" class="block">Контакты</a>
-</nav>
-
-<!-- Hero -->
-<section class="h-96 bg-cover bg-center flex items-center justify-center" style="background-image: url('{% static "images/hero-bg.jpg" %}')">
-  <div class="text-center text-white">
-    <h1 class="text-5xl font-light mb-6">Добро пожаловать</h1>
-    <a href="#features"
-       class="inline-block px-6 py-3 border-2 border-white rounded hover:bg-white hover:text-gray-800 transition">
-      Начать
-    </a>
-  </div>
-</section>
-
-<!-- Features -->
-<section id="features" class="py-16 px-6 bg-gray-50">
-  <div class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8">
-    {% for feature in features %}
-      <div class="bg-white p-6 rounded-lg text-center shadow-sm">
-        <img src="{{ feature.icon.url }}" alt="{{ feature.title }}" class="mx-auto mb-4 h-16 w-16">
-        <h3 class="text-xl font-medium mb-2">{{ feature.title }}</h3>
-        <p class="text-gray-600">{{ feature.text }}</p>
-      </div>
-    {% endfor %}
-  </div>
-</section>
-
-<!-- Footer -->
-<footer class="py-8 px-6 bg-gray-100 text-center text-gray-700">
-  <p class="mb-4">&copy; {{ year }} МойСайт. Все права защищены.</p>
-  <div class="space-x-4">
-    <a href="https://instagram.com" target="_blank" class="hover:text-gray-900">Instagram</a>
-    <a href="https://facebook.com" target="_blank" class="hover:text-gray-900">Facebook</a>
-    <a href="https://twitter.com"  target="_blank" class="hover:text-gray-900">Twitter</a>
-  </div>
-</footer>
-
-<!-- Подключаем скрипт для меню -->
-<script src="{% static 'js/menu.js' %}"></script>
+{% block extra_js %}
+<script>
+    // Hero Slider Functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const sliderContainer = document.getElementById('slider-container');
+        const sliderDots = document.querySelectorAll('.slider-dot');
+        let currentSlide = 0;
+        const slideCount = sliderDots.length;
+        
+        // Function to go to a specific slide
+        function goToSlide(index) {
+            currentSlide = index;
+            sliderContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            // Update active dot
+            sliderDots.forEach((dot, i) => {
+                if (i === currentSlide) {
+                    dot.classList.add('opacity-100');
+                    dot.classList.remove('opacity-50');
+                } else {
+                    dot.classList.add('opacity-50');
+                    dot.classList.remove('opacity-100');
+                }
+            });
+        }
+        
+        // Set up dot click handlers
+        sliderDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                goToSlide(index);
+            });
+        });
+        
+        // Auto-advance slides
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slideCount;
+            goToSlide(currentSlide);
+        }, 5000);
+        
+        // Add to Cart functionality
+        const addToCartButtons = document.querySelectorAll('.add-to-cart');
+        addToCartButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                
+                // Send AJAX request to add item to cart
+                fetch('#', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        quantity: 1
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message or update cart count
+                        alert('Product added to cart!');
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}

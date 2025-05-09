@@ -1,0 +1,88 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}About - Life Etc.{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <!-- Section Title -->
+    <div class="text-center mb-16">
+        <div class="flex items-center justify-center">
+            <div class="w-1/4 h-px bg-gray-300"></div>
+            <h1 class="px-4 text-lg text-gray-800 uppercase tracking-wider">BEHIND THE BRAND</h1>
+            <div class="w-1/4 h-px bg-gray-300"></div>
+        </div>
+    </div>
+    
+    <!-- Brand Story with Images -->
+    <div class="max-w-5xl mx-auto mb-20">
+        <div class="relative">
+            <!-- Main Image -->
+            <div class="w-3/5 ml-auto">
+                <img src="/media/products/2025/05/08/image2.png" alt="Model in black outfit" class="w-full h-auto">
+            </div>
+            
+            <!-- Leaf Image (positioned absolutely) -->
+            <div class="absolute left-0 top-1/4 w-2/5">
+                <img src="/media/products/2025/05/08/image.png" alt="Green leaf closeup" class="w-full h-auto">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Brand Story Text -->
+    <div class="max-w-3xl mx-auto text-center space-y-8">
+        <p class="text-lg">
+            <span class="text-amber-700">Warming hearts with the warmth of hand-knitting.</span> 
+        </p>
+        
+        <p class="text-sm text-gray-600">
+            At Life Etc., we believe every garment tells a story. Our sweaters and accessories are meticulously hand-knit from premium, sustainably sourced yarns, blending timeless Nordic motifs with contemporary silhouettes. Discover pieces that not only keep you warm—but also reflect your unique personality.
+        </p>
+    </div>
+    
+    <!-- Our Values Section -->
+    <div class="max-w-5xl mx-auto mt-24">
+        <h2 class="text-xl font-medium text-center mb-12">Our Values</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <!-- Value 1 -->
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center border border-gray-200 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                </div>
+                <h3 class="font-medium mb-2">Sustainability</h3>
+                <p class="text-sm text-gray-600">
+                    We prioritize eco-friendly materials and ethical production methods, ensuring each piece is kind to the planet and gentle on your skin.
+                </p>
+            </div>
+            
+            <!-- Value 2 -->
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center border border-gray-200 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" />
+                    </svg>
+                </div>
+                <h3 class="font-medium mb-2">Quality</h3>
+                <p class="text-sm text-gray-600">
+                    From careful fiber selection to precise craftsmanship, our products meet the highest standards for durability and comfort.
+                </p>
+            </div>
+            
+            <!-- Value 3 -->
+            <div class="text-center">
+                <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center border border-gray-200 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <h3 class="font-medium mb-2">Community</h3>
+                <p class="text-sm text-gray-600">
+                    We celebrate the art of knitting by collaborating with local artisans and fostering a community united by creativity and tradition.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

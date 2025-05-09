@@ -1,0 +1,344 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Journal - Life Etc.{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Section Title -->
+    <div class="text-center mb-12">
+        <div class="flex items-center justify-center">
+            <div class="w-1/4 h-px bg-gray-300"></div>
+            <h1 class="px-4 text-lg text-gray-800 uppercase tracking-wider">
+                <span class="text-green-600">J</span>
+                <span class="text-gray-800">O</span>
+                <span class="text-amber-600">U</span>
+                <span class="text-gray-800">R</span>
+                <span class="text-gray-800">N</span>
+                <span class="text-gray-800">A</span>
+                <span class="text-gray-800">L</span>
+            </h1>
+            <div class="w-1/4 h-px bg-gray-300"></div>
+        </div>
+    </div>
+    
+    <!-- Blog Navigation -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <a href="{% url 'journal' %}" class="text-gray-600 hover:text-gray-900">All Posts</a>
+        </div>
+        <div>
+            <button class="text-gray-600 hover:text-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Blog Posts Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Blog Post 1 -->
+        <div class="border border-gray-100 shadow-sm">
+            <a href="#">
+                <img src="/media/products/2025/05/08/image.png" alt="Must Have Basic Items" class="w-full h-64 object-cover">
+            </a>
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
+                        <img src="/media/products/2025/05/08/image2.png" alt="Admin" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Admin</p>
+                        <p class="text-xs text-gray-500">May 16, 2023 • 1 min read</p>
+                    </div>
+                    <button class="ml-auto text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                    </button>
+                </div>
+                <h2 class="text-xl font-medium mb-4">
+                    <a href="#" class="text-gray-800 hover:text-gray-600">
+                        Must Have Basic Items
+                    </a>
+                </h2>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <button class="text-gray-400 hover:text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 2 -->
+        <div class="border border-gray-100 shadow-sm">
+            <a href="#">
+                <img src="#" alt="Welcome, Weekend Vibes" class="w-full h-64 object-cover">
+            </a>
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
+                        <img src="#" alt="Admin" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Admin</p>
+                        <p class="text-xs text-gray-500">May 16, 2023 • 1 min read</p>
+                    </div>
+                    <button class="ml-auto text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                    </button>
+                </div>
+                <h2 class="text-xl font-medium mb-4">
+                    <a href="#" class="text-gray-800 hover:text-gray-600">
+                        Welcome, Weekend Vibes
+                    </a>
+                </h2>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <button class="text-gray-400 hover:text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 3 -->
+        <div class="border border-gray-100 shadow-sm">
+            <a href="#">
+                <img src="#" alt="The Golden Age Is Here" class="w-full h-64 object-cover">
+            </a>
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
+                        <img src="#" alt="Admin" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Admin</p>
+                        <p class="text-xs text-gray-500">May 16, 2023 • 1 min read</p>
+                    </div>
+                    <button class="ml-auto text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                    </button>
+                </div>
+                <h2 class="text-xl font-medium mb-4">
+                    <a href="#" class="text-gray-800 hover:text-gray-600">
+                        The Golden Age Is Here
+                    </a>
+                </h2>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <button class="text-gray-400 hover:text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 4 -->
+        <div class="border border-gray-100 shadow-sm">
+            <a href="#">
+                <img src="#" alt="Forest Green Is Our New Obsession" class="w-full h-64 object-cover">
+            </a>
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
+                        <img src="#" alt="Admin" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Admin</p>
+                        <p class="text-xs text-gray-500">May 16, 2023 • 1 min read</p>
+                    </div>
+                    <button class="ml-auto text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                    </button>
+                </div>
+                <h2 class="text-xl font-medium mb-4">
+                    <a href="#" class="text-gray-800 hover:text-gray-600">
+                        Forest Green Is Our New Obsession
+                    </a>
+                </h2>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <button class="text-gray-400 hover:text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 5 -->
+        <div class="border border-gray-100 shadow-sm">
+            <a href="#">
+                <img src="#" alt="Double Vision: Tips for Shopping with Your Bestie" class="w-full h-64 object-cover">
+            </a>
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
+                        <img src="#" alt="Admin" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Admin</p>
+                        <p class="text-xs text-gray-500">May 16, 2023 • 1 min read</p>
+                    </div>
+                    <button class="ml-auto text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                    </button>
+                </div>
+                <h2 class="text-xl font-medium mb-4">
+                    <a href="#" class="text-gray-800 hover:text-gray-600">
+                        Double Vision: Tips for Shopping with Your Bestie
+                    </a>
+                </h2>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <button class="text-gray-400 hover:text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Blog Post 6 -->
+        <div class="border border-gray-100 shadow-sm">
+            <a href="#">
+                <img src="#" alt="How to Vacay in Style" class="w-full h-64 object-cover">
+            </a>
+            <div class="p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 rounded-full overflow-hidden mr-3">
+                        <img src="#" alt="Admin" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium">Admin</p>
+                        <p class="text-xs text-gray-500">May 16, 2023 • 1 min read</p>
+                    </div>
+                    <button class="ml-auto text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                    </button>
+                </div>
+                <h2 class="text-xl font-medium mb-4">
+                    <a href="#" class="text-gray-800 hover:text-gray-600">
+                        How to Vacay in Style
+                    </a>
+                </h2>
+                <div class="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <div class="flex items-center text-gray-500 text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span>0</span>
+                    </div>
+                    <button class="text-gray-400 hover:text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="flex justify-center mt-12">
+        <div class="flex space-x-1">
+            <a href="#" class="px-3 py-1 border border-gray-300 text-sm">
+                &laquo;
+            </a>
+            <span class="px-3 py-1 border border-gray-800 bg-gray-800 text-white text-sm">1</span>
+            <a href="#" class="px-3 py-1 border border-gray-300 text-sm hover:bg-gray-100">2</a>
+            <a href="#" class="px-3 py-1 border border-gray-300 text-sm hover:bg-gray-100">3</a>
+            <a href="#" class="px-3 py-1 border border-gray-300 text-sm">
+                &raquo;
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

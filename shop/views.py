@@ -5,11 +5,35 @@ from django.utils import timezone
 
 # Create your views here.
 def home(request):
+    features = [
+    {
+        'icon': '<i class="fas fa-cog"></i>',
+        'title': 'Настройка',
+        'text': 'Легко настраивайте свой проект под любые нужды.'
+    },
+    {
+        'icon': '<i class="fas fa-shield-alt"></i>',
+        'title': 'Безопасность',
+        'text': 'Надёжная защита данных ваших пользователей.'
+    },
+    {
+        'icon': '<i class="fas fa-rocket"></i>',
+        'title': 'Производительность',
+        'text': 'Высокая скорость и масштабируемость.'
+    },
+    # добавьте столько элементов, сколько нужно
+    ],
     products = Product.objects.all()
-    return render(request, 'shop/home.html', {'products': products})
+
+    return render(request, 'shop/home.html', {
+        'features': features,
+        'now': timezone.now(),
+        'products': products
+    })
 
 def index(request):
-    return render(request, 'shop/index.html')
+    products = Product.objects.all()
+    return render(request, 'shop/index.html', {'products': products})
 
 def product_detail(request):
     return render(request, 'shop/product_detail.html')
@@ -17,6 +41,15 @@ def product_detail(request):
 def collection(request):
     products = Product.objects.all()
     return render(request, 'shop/collection.html', {'products': products})
+
+def contact(request):
+    return render(request, 'shop/contact.html')
+
+def about(request):
+    return render(request, 'shop/about.html')
+
+def journal(request):
+    return render(request, 'shop/journal.html')
 
 def add_to_cart(request, product_id):
     """
