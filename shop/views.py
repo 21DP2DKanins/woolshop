@@ -1,7 +1,15 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product
 from django.utils import timezone
-
+from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.urls import reverse_lazy
+from django.views.generic import TemplateView
+from django.contrib.auth.views import (
+    LoginView, LogoutView, PasswordResetView, 
+    PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+)
 
 # Create your views here.
 def home(request):
@@ -51,6 +59,18 @@ def about(request):
 def journal(request):
     return render(request, 'shop/journal.html')
 
+def account(request):
+    return render(request, 'shop/account.html')
+
+def login(request):
+    return render(request, 'shop/login.html')
+
+def signup(request):
+    return render(request, 'shop/signup.html')
+
+def password_reset(request):
+    return render(request, 'shop/password_reset.html')
+
 def add_to_cart(request, product_id):
     """
     Добавляет товар в корзину (хранится в сессии) 
@@ -92,3 +112,124 @@ def cart_view(request):
         'cart_items': cart_items,
         'total': total,
     })
+
+from .forms import (
+    SignUpForm, CustomLoginForm, CustomPasswordResetForm, 
+    ProfileUpdateForm, PasswordChangeForm
+)
+
+
+class CustomLoginView(LoginView):
+    form_class = CustomLoginForm
+    template_name = 'login.html'
+    
+    def form_valid(self, form):
+        remember = form.cleaned_data.get('remember', False)
+        if not remember:
+            # Если пользователь не выбрал "Запомнить меня", 
+            # устанавливаем время жизни сессии до закрытия браузера
+            self.request.session.set_expiry(0)
+        
+        return super().form_valid(form)
+
+
+class CustomLogoutView(LogoutView):
+    next_page = 'login'
+
+
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Автоматически входим после регистрации
+            login(request, user)
+            messages.success(request, 'Регистрация успешно завершена!')
+            return redirect('account')
+    else:
+        form = SignUpForm()
+    
+    return render(request, 'signup.html', {'form': form})
+
+
+class CustomPasswordResetView(PasswordResetView):
+    form_class = CustomPasswordResetForm
+    template_name = 'password_reset.html'
+    email_template_name = 'password_reset_email.html'
+    success_url = reverse_lazy('password_reset_done')
+
+
+class CustomPasswordResetDoneView(PasswordResetDoneView):
+    template_name = 'password_reset_done.html'
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')
+
+
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    template_name = 'password_reset_complete.html'
+
+
+@login_required
+def account_view(request):
+    return render(request, 'account.html')
+
+
+@login_required
+def account_update_view(request):
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Профиль успешно обновлен!')
+            return redirect('account')
+    else:
+        form = ProfileUpdateForm(instance=request.user)
+    
+    return render(request, 'account.html', {'form': form})
+
+
+@login_required
+def account_change_password_view(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            # Меняем пароль
+            request.user.set_password(form.cleaned_data['new_password'])
+            request.user.save()
+            # Обновляем сессию, чтобы пользователь не вылетел после смены пароля
+            update_session_auth_hash(request, request.user)
+            messages.success(request, 'Пароль успешно изменен!')
+            return redirect('account')
+    else:
+        form = PasswordChangeForm(request.user)
+    
+    return render(request, 'account.html', {'password_form': form})
+
+
+@login_required
+def account_orders_view(request):
+    # Здесь будет логика получения заказов пользователя
+    orders = []  # Заглушка, в реальном проекте здесь будут заказы из БД
+    return render(request, 'account_orders.html', {'orders': orders})
+
+
+@login_required
+def account_wishlist_view(request):
+    # Здесь будет логика получения избранных товаров пользователя
+    wishlist = []  # Заглушка, в реальном проекте здесь будут товары из БД
+    return render(request, 'account_wishlist.html', {'wishlist': wishlist})
+
+
+@login_required
+def account_addresses_view(request):
+    # Здесь будет логика получения адресов пользователя
+    addresses = []  # Заглушка, в реальном проекте здесь будут адреса из БД
+    return render(request, 'account_addresses.html', {'addresses': addresses})
+
+
+@login_required
+def account_settings_view(request):
+    return render(request, 'account_settings.html')
