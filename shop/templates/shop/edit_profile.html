@@ -1,0 +1,71 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Edit Profile - Shop{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <!-- Section Title -->
+    <div class="text-center mb-12">
+        <div class="flex items-center justify-center">
+            <div class="w-1/4 h-px bg-gray-300"></div>
+            <h1 class="px-4 text-lg text-gray-800 uppercase tracking-wider">EDIT PROFILE</h1>
+            <div class="w-1/4 h-px bg-gray-300"></div>
+        </div>
+    </div>
+    
+    <div class="max-w-md mx-auto">
+        <!-- Edit Profile Form -->
+        <div class="bg-white p-8 border border-gray-200 shadow-sm">
+            <h2 class="text-xl font-medium mb-6 text-center">Update Your Information</h2>
+            
+            {% if messages %}
+            <div class="mb-6">
+                {% for message in messages %}
+                <div class="p-3 {% if message.tags == 'error' %}bg-red-100 text-red-700{% else %}bg-green-100 text-green-700{% endif %} rounded">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <form method="post" action="{% url 'edit_profile' %}" class="space-y-4">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="first_name" class="block text-sm text-gray-600 mb-1">First Name</label>
+                        <input type="text" id="first_name" name="first_name" value="{{ user.first_name }}" class="input-field">
+                    </div>
+                    <div>
+                        <label for="last_name" class="block text-sm text-gray-600 mb-1">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" value="{{ user.last_name }}" class="input-field">
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="email" class="block text-sm text-gray-600 mb-1">Email</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" readonly class="input-field bg-gray-100">
+                    <p class="text-xs text-gray-500 mt-1">Email cannot be changed. Contact support if needed.</p>
+                </div>
+                
+                <div>
+                    <label for="phone" class="block text-sm text-gray-600 mb-1">Phone</label>
+                    <input type="tel" id="phone" name="phone" value="{{ user.phone }}" class="input-field">
+                </div>
+                
+                <div class="flex items-start">
+                    <input type="checkbox" id="newsletter" name="newsletter" {% if user.newsletter %}checked{% endif %} class="mt-1 mr-2">
+                    <label for="newsletter" class="text-sm text-gray-600">
+                        I want to receive news and special offers by email
+                    </label>
+                </div>
+                
+                <div class="flex justify-between">
+                    <a href="{% url 'profile' %}" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'shop/base.html' %}
+{% block title %}Checkout – Wool Shop{% endblock %}
+
+{% load widget_tweaks %}
+{% block content %}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
+    const input = document.getElementById('cart-json-input');
+    if (input) {
+      input.value = JSON.stringify(cart);
+    }
+  });
+</script>
+<div class="container mx-auto px-4 py-8 max-w-2xl">
+  <h2 class="text-2xl font-bold mb-6">Checkout</h2>
+<form method="POST" class="space-y-6">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="grid gap-4">
+    <div>
+      <label class="block mb-1 text-gray-700 font-medium">Full Name</label>
+      {{ form.full_name|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+    </div>
+    <div>
+      <label class="block mb-1 text-gray-700 font-medium">Email</label>
+      {{ form.email|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+    </div>
+    <div>
+      <label class="block mb-1 text-gray-700 font-medium">City</label>
+      {{ form.city|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+    </div>
+    <div>
+      <label class="block mb-1 text-gray-700 font-medium">Address</label>
+      {{ form.address|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+    </div>
+    <div>
+      <label class="block mb-1 text-gray-700 font-medium">Postal Code</label>
+      {{ form.postal_code|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+    </div>
+  </div>
+
+  <h3 class="text-xl font-semibold mt-8 mb-4">Card Payment</h3>
+  <div class="grid gap-4">
+    <input class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" type="text" placeholder="Card Number" required>
+    <input class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" type="text" placeholder="Expiry Date (MM/YY)" required>
+    <input class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" type="text" placeholder="CVV" required>
+  </div>
+
+  <input type="hidden" name="cart_json" id="cart-json-input">
+
+  <button type="submit" class="w-full mt-6 bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition">Complete Order</button>
+</form>
+
+</div>
+{% endblock %}

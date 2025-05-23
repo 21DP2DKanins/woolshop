@@ -1,246 +1,287 @@
-{% extends 'shop/base.html' %}
+{% extends "shop/base.html" %}
+{% load static %}
 
-{% block title %}Shop - Life Etc.{% endblock %}
+{% block title %}Shop - Wool shop.{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-card           { transition: transform .3s ease }
+    .product-card:hover     { transform: translateY(-5px) }
+
+    /*-- sidebar --*/
+    .filter-section h3      { cursor:pointer }
+    .filter-toggle svg      { transition:transform .2s }
+    .color-swatch           {
+        width:24px;height:24px;border-radius:50%;cursor:pointer;
+        border:1px solid #e5e5e5;display:inline-block
+    }
+    .color-swatch.selected  { box-shadow:0 0 0 2px #fff,0 0 0 3px #000 }
+
+    /*-- buttons --*/
+    .add-to-cart-btn        {
+        width:100%;padding:8px 0;font-size:14px;
+        border:1px solid #e5e5e5;background:transparent;color:#333;
+        transition:all .2s
+    }
+    .add-to-cart-btn:hover  { background:#f5f5f5 }
+
+    /*-- badges --*/
+    .product-badge          {
+        position:absolute;top:10px;right:10px;background:#4b6043;
+        color:#fff;padding:4px 8px;font-size:12px
+    }
+    .product-badge.new      { background:#4b6043 }
+</style>
+{% endblock %}
 
 {% block content %}
 <div class="container mx-auto px-4 py-8">
-    <!-- Breadcrumbs -->
-    <div class="text-sm text-gray-600 mb-8">
-        <a href="{% url 'home' %}" class="hover:text-gray-900">Home</a> / 
-        <span>All Products</span>
-    </div>
-    
     <div class="flex flex-col md:flex-row">
-        <!-- Sidebar Filters -->
-        <div class="w-full md:w-1/4 pr-0 md:pr-8">
-            <h2 class="text-lg font-medium mb-4">Browse by</h2>
-            <ul class="mb-6">
-                <li class="py-1"><a href="" class="text-gray-900 font-medium">All Products</a></li>
-                <li class="py-1"><a href="#" class="text-gray-600 hover:text-gray-900">Featured Items</a></li>
+
+        <!------- LEFT SIDEBAR FILTERS ------->
+        <aside class="w-full md:w-1/5 pr-0 md:pr-8 border-r border-gray-200">
+            <h2 class="text-base font-medium mb-4">Browse by</h2>
+            <ul class="mb-8 border-b border-gray-200 pb-6">
+                <li class="py-1">
+                    <a href="{% url 'collection' %}" class="hover:underline
+                       {% if not selected.featured %}text-gray-900{% else %}text-gray-600{% endif %}">
+                       All Products
+                    </a>
+                </li>
             </ul>
-            
-            <h2 class="text-lg font-medium mb-4">Filter by</h2>
-            <form method="get" action="#">
-                <!-- Product Type -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-medium mb-2 flex justify-between items-center">
+
+            <!---- FILTER FORM ---->
+            <h2 class="text-base font-medium mb-4">Filter by</h2>
+            <form id="filter-form" method="get" action="{% url 'collection' %}">
+
+                <!-- Product type (featured) -->
+                <div class="mb-6 filter-section">
+                    <h3 class="text-sm font-medium mb-3 flex justify-between items-center filter-toggle">
                         Product type
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                  d="M19 9l-7 7-7-7"/>
                         </svg>
                     </h3>
-                    <div class="space-y-2">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="featured" name="featured" value="1" class="mr-2" {% if request.GET.featured == '1' %}checked{% endif %}>
-                            <label for="featured" class="text-sm text-gray-600">Featured Items</label>
-                        </div>
-                    </div>
                 </div>
-                
-                <!-- Price Range -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-medium mb-2 flex justify-between items-center">
+
+                <!-- Price -->
+                <div class="mb-6 filter-section border-b border-gray-200 pb-6">
+                    <h3 class="text-sm font-medium mb-3 flex justify-between items-center filter-toggle">
                         Price
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                  d="M19 9l-7 7-7-7"/>
                         </svg>
                     </h3>
-                    <div class="px-2">
-                        <div class="relative pt-5 pb-2">
-                            <div class="h-1 bg-gray-200 rounded-full">
-                                <div class="absolute h-1 bg-gray-500 rounded-full" style="left: 25%; right: 25%;"></div>
-                            </div>
-                            <div class="absolute left-1/4 top-0 w-4 h-4 -mt-1 rounded-full bg-white border border-gray-400"></div>
-                            <div class="absolute right-1/4 top-0 w-4 h-4 -mt-1 rounded-full bg-white border border-gray-400"></div>
+
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-2">
+                            <input type="range" id="min-range" min="{{ price_min }}" max="{{ price_max }}"
+                                   value="{{ selected.min_price|default:price_min }}" class="w-full">
+                            <span id="min-price-label" class="text-xs text-gray-600 w-10 text-right">
+                                ${{ selected.min_price|default:price_min }}
+                            </span>
                         </div>
-                        <div class="flex justify-between text-xs text-gray-600 mt-2">
-                            <span>$20</span>
-                            <span>$100</span>
+
+                        <div class="flex items-center space-x-2">
+                            <input type="range" id="max-range" min="{{ price_min }}" max="{{ price_max }}"
+                                   value="{{ selected.max_price|default:price_max }}" class="w-full">
+                            <span id="max-price-label" class="text-xs text-gray-600 w-10 text-right">
+                                ${{ selected.max_price|default:price_max }}
+                            </span>
                         </div>
-                        <input type="hidden" name="min_price" value="20">
-                        <input type="hidden" name="max_price" value="100">
+
+                        <input type="hidden" name="min_price" id="min-price"
+                               value="{{ selected.min_price|default:price_min }}">
+                        <input type="hidden" name="max_price" id="max-price"
+                               value="{{ selected.max_price|default:price_max }}">
                     </div>
                 </div>
-                
+
                 <!-- Color -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-medium mb-2 flex justify-between items-center">
+                <div class="mb-6 filter-section border-b border-gray-200 pb-6">
+                    <h3 class="text-sm font-medium mb-3 flex justify-between items-center filter-toggle">
                         Color
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                  d="M19 9l-7 7-7-7"/>
                         </svg>
                     </h3>
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        <button type="button" class="w-6 h-6 rounded-full bg-white border border-gray-300" data-color="white"></button>
-                        <button type="button" class="w-6 h-6 rounded-full bg-amber-700" data-color="brown"></button>
-                        <button type="button" class="w-6 h-6 rounded-full bg-gray-500" data-color="gray"></button>
-                        <button type="button" class="w-6 h-6 rounded-full bg-gray-800" data-color="black"></button>
-                        <button type="button" class="w-6 h-6 rounded-full bg-green-700" data-color="green"></button>
-                        <button type="button" class="w-6 h-6 rounded-full bg-yellow-500" data-color="yellow"></button>
+
+                    <div class="flex flex-wrap gap-2">
+                        {% for code in available_colors %}
+                            <span class="color-swatch {% if selected.color == code %}selected{% endif %}"
+                                  style="background-color: {{ code }};"
+                                  data-color="{{ code }}"></span>
+                        {% endfor %}
                     </div>
-                    <input type="hidden" name="color" value="">
+
+                    <input type="hidden" name="color" id="color-input" value="{{ selected.color }}">
                 </div>
-                
+
                 <!-- Size -->
-                <div class="mb-6">
-                    <h3 class="text-sm font-medium mb-2 flex justify-between items-center">
+                <div class="mb-6 filter-section">
+                    <h3 class="text-sm font-medium mb-3 flex justify-between items-center filter-toggle">
                         Size
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                  d="M19 9l-7 7-7-7"/>
                         </svg>
                     </h3>
+
                     <div class="space-y-2">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="size_large" name="size" value="large" class="mr-2" {% if 'large' in request.GET.size %}checked{% endif %}>
-                            <label for="size_large" class="text-sm text-gray-600">Large</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="size_medium" name="size" value="medium" class="mr-2" {% if 'medium' in request.GET.size %}checked{% endif %}>
-                            <label for="size_medium" class="text-sm text-gray-600">Medium</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="size_one_size" name="size" value="one_size" class="mr-2" {% if 'one_size' in request.GET.size %}checked{% endif %}>
-                            <label for="size_one_size" class="text-sm text-gray-600">One size</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="size_small" name="size" value="small" class="mr-2" {% if 'small' in request.GET.size %}checked{% endif %}>
-                            <label for="size_small" class="text-sm text-gray-600">Small</label>
-                        </div>
+                        {% for size in available_sizes %}
+                            <label class="flex items-center text-sm text-gray-600">
+                                <input type="checkbox" name="size" value="{{ size }}" class="mr-2"
+                                       {% if size in selected.sizes %}checked{% endif %}>
+                                {{ size|capfirst }}
+                            </label>
+                        {% endfor %}
                     </div>
                 </div>
-                
-                <button type="submit" class="btn w-full">Apply Filters</button>
             </form>
-        </div>
-        
-        <!-- Product Grid -->
-        <div class="w-full md:w-3/4 mt-8 md:mt-0">
-            <div class="flex justify-between items-center mb-6">
-                <h1 class="text-2xl font-medium">All Products</h1>
-                <div class="relative">
-                    <select id="sort-select" class="appearance-none border border-gray-300 py-1 pl-3 pr-8 rounded">
-                        <option value="recommended">Recommended</option>
-                        <option value="price_low">Price (low to high)</option>
-                        <option value="price_high">Price (high to low)</option>
-                        <option value="newest">Newest</option>
-                        <option value="name_az">Name A-Z</option>
-                        <option value="name_za">Name Z-A</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                        <svg class="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+        </aside>
+
+        <!------- PRODUCT GRID ------->
+        <main class="w-full md:w-4/5 mt-8 md:mt-0 md:pl-8">
+            <!-- Updated responsive header & sort -->
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-2 sm:space-y-0">
+                <h1 class="text-2xl font-normal">All Products</h1>
+
+                <div class="flex flex-col sm:flex-row items-center sm:space-x-4 w-full sm:w-auto">
+                    <span class="text-sm text-gray-500 mr-0 sm:mr-2 mb-1 sm:mb-0">
+                        {{ products|length }} products
+                    </span>
+                    <div class="relative w-full sm:w-auto">
+                        <select id="sort-select"
+                                class="w-full sm:w-auto appearance-none border-b border-gray-300 py-1 pl-2 pr-8 bg-transparent text-sm">
+                            <option value="price_low">Sort by: Price (low → high)</option>
+                            <option value="price_high">Sort by: Price (high → low)</option>
+                            <option value="name_az">Sort by: Name A-Z</option>
+                            <option value="name_za">Sort by: Name Z-A</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10">
                 {% for product in products %}
-                <div class="product-card border rounded p-4 flex flex-col">
-                    <a href="#">
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-48 object-cover rounded">
-                    </a>
-                    <h3 class="mt-4 text-sm font-medium">{{ product.name }}</h3>
-                    <p class="text-gray-600">${{ product.price }}</p>
-                    <button
-                        class="add-to-cart mt-auto btn bg-blue-600 text-white py-2 rounded"
-                        data-product-id="{{ product.id }}"
-                        data-product-name="{{ product.name }}"
-                        data-product-price="{{ product.price }}"
-                        data-product-image="{{ product.image.url }}"
-                    >
-                        Add to Cart
-                    </button>
-                </div>
+                    <div class="product-card relative">
+                        {% if product.featured %}
+                            <div class="product-badge">Best Seller</div>
+                        {% endif %}
+                        {% if product.is_new %}
+                            <div class="product-badge new">New</div>
+                        {% endif %}
+
+                        <a href="{% url 'product_detail' product.id %}">
+                            <img src="{% if product.image %}{{ product.image.url }}{% else %}
+                                      {% static 'images/placeholder.jpg' %}{% endif %}"
+                                 alt="{{ product.name }}"
+                                 class="w-full h-64 object-cover">
+                        </a>
+
+                        <h3 class="mt-3 text-sm font-normal">
+                            <a href="{% url 'product_detail' product.id %}" class="hover:underline">
+                                {{ product.name }}
+                            </a>
+                        </h3>
+                        <p class="text-sm text-gray-800">${{ product.price }}</p>
+
+                        <a href="{% url 'product_detail' product.id %}"
+                           class="add-to-cart-btn mt-3 block">
+                            View & Add to Cart
+                        </a>
+                    </div>
                 {% empty %}
-                <p class="col-span-3 text-center text-gray-600">No products found.</p>
+                    <p class="col-span-4 text-center text-gray-600 py-12">
+                        No products found.
+                    </p>
                 {% endfor %}
             </div>
-
-            <!-- Pagination -->
-            {% if products.has_other_pages %}
-            <div class="flex justify-center mt-12">
-                <div class="flex space-x-1">
-                    {% if products.has_previous %}
-                    <a href="?page={{ products.previous_page_number }}" class="px-3 py-1 border border-gray-300 text-sm">&laquo;</a>
-                    {% endif %}
-                    {% for i in products.paginator.page_range %}
-                        {% if products.number == i %}
-                        <span class="px-3 py-1 border border-gray-800 bg-gray-800 text-white text-sm">{{ i }}</span>
-                        {% else %}
-                        <a href="?page={{ i }}" class="px-3 py-1 border border-gray-300 text-sm hover:bg-gray-100">{{ i }}</a>
-                        {% endif %}
-                    {% endfor %}
-                    {% if products.has_next %}
-                    <a href="?page={{ products.next_page_number }}" class="px-3 py-1 border border-gray-300 text-sm">&raquo;</a>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-        </div>
+        </main>
     </div>
 </div>
 
-<!-- Toast container -->
 <div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Корзина в localStorage
-    const getCart = () => JSON.parse(localStorage.getItem('cart') || '[]');
-    const saveCart = cart => localStorage.setItem('cart', JSON.stringify(cart));
 
-    // Показ тоста
-    function showToast(message) {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = 'max-w-xs w-full bg-green-500 text-white px-4 py-2 rounded shadow-lg animate-slide-in';
-        toast.textContent = message;
-        container.appendChild(toast);
-        setTimeout(() => {
-            toast.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-            toast.addEventListener('transitionend', () => toast.remove());
-        }, 2500);
-    }
+    /*-- keep sort selection across reloads --*/
+    const sortSelect = document.getElementById('sort-select');
+    const params     = new URLSearchParams(location.search);
+    if (params.get('sort')) sortSelect.value = params.get('sort');
+    sortSelect.addEventListener('change', () => {
+        params.set('sort', sortSelect.value);
+        location.search = params.toString();
+    });
 
-    // Обработчик Add to Cart
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id    = btn.dataset.productId;
-            const name  = btn.dataset.productName;
-            const price = parseFloat(btn.dataset.productPrice);
-            const image = btn.dataset.productImage;
-            let cart = getCart();
-            let item = cart.find(i => i.id === id);
-            if (item) {
-                item.quantity += 1;
-            } else {
-                cart.push({ id, name, price, image, quantity: 1 });
-            }
-            saveCart(cart);
-            showToast(`“${name}” добавлен в корзину`);
+    /*-- accordion toggles --*/
+    document.querySelectorAll('.filter-toggle').forEach(h => {
+        h.addEventListener('click', () => {
+            const body = h.nextElementSibling;
+            const icon = h.querySelector('svg');
+            const hide = body.style.display === 'none';
+            body.style.display = hide ? 'block' : 'none';
+            icon.style.transform = hide ? 'rotate(0)' : 'rotate(-90deg)';
         });
     });
 
-    // Сортировка
-    const sortSelect = document.getElementById('sort-select');
-    sortSelect.addEventListener('change', () => {
-        const url = new URL(window.location.href);
-        url.searchParams.set('sort', sortSelect.value);
-        window.location.href = url;
+    /*-- color swatches --*/
+    document.querySelectorAll('.color-swatch').forEach(swatch => {
+        swatch.addEventListener('click', () => {
+            const input  = document.getElementById('color-input');
+            const active = swatch.classList.contains('selected');
+
+            document.querySelectorAll('.color-swatch.selected').forEach(s => s.classList.remove('selected'));
+
+            if (!active) {
+                swatch.classList.add('selected');
+                input.value = swatch.dataset.color;
+            } else {
+                input.value = '';
+            }
+            document.getElementById('filter-form').submit();
+        });
     });
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('sort')) sortSelect.value = params.get('sort');
+
+    /*-- checkboxes auto submit --*/
+    document.querySelectorAll('#filter-form input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', () => document.getElementById('filter-form').submit());
+    });
+
+    /*-- price sliders --*/
+    const minR = document.getElementById('min-range');
+    const maxR = document.getElementById('max-range');
+    const minL = document.getElementById('min-price-label');
+    const maxL = document.getElementById('max-price-label');
+    const minI = document.getElementById('min-price');
+    const maxI = document.getElementById('max-price');
+
+    const clamp = e => {
+        if (+minR.value > +maxR.value) {
+            if (e.target === minR) maxR.value = minR.value;
+            else minR.value = maxR.value;
+        }
+        minL.textContent = '$' + minR.value;
+        maxL.textContent = '$' + maxR.value;
+        minI.value = minR.value;
+        maxI.value = maxR.value;
+    };
+
+    minR.addEventListener('input', clamp);
+    maxR.addEventListener('input', clamp);
+    minR.addEventListener('change', () => document.getElementById('filter-form').submit());
+    maxR.addEventListener('change', () => document.getElementById('filter-form').submit());
 });
 </script>
-
-<style>
-@keyframes slide-in {
-  from { transform: translateX(100%); opacity: 0; }
-  to   { transform: translateX(0); opacity: 1; }
-}
-.animate-slide-in {
-  animation: slide-in 0.3s ease-out;
-}
-</style>
 {% endblock %}

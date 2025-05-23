@@ -1,0 +1,12 @@
+{% extends 'shop/base.html' %}
+{% block title %}Добавить отзыв{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-xl">
+  <h1 class="text-2xl font-bold mb-4">Оставить отзыв</h1>
+  <form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn-primary mt-2">Отправить</button>
+  </form>
+</div>
+{% endblock %}

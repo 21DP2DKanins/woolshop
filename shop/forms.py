@@ -2,7 +2,13 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
 from .models import Profile
+from django import forms
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.utils.translation import gettext_lazy as _
+from .models import Order
 
+User = get_user_model()
 
 class SignUpForm(UserCreationForm):
     first_name = forms.CharField(max_length=30, required=True)
@@ -35,6 +41,22 @@ class SignUpForm(UserCreationForm):
             user.profile.save()
         
         return user
+
+
+from django import forms
+from .models import Order
+
+class OrderCreateForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['full_name', 'email', 'city', 'address', 'postal_code']
+        widgets = {
+            'full_name': forms.TextInput(attrs={'class': 'w-full border px-4 py-2'}),
+            'email': forms.EmailInput(attrs={'class': 'w-full border px-4 py-2'}),
+            'city': forms.TextInput(attrs={'class': 'w-full border px-4 py-2'}),
+            'address': forms.TextInput(attrs={'class': 'w-full border px-4 py-2'}),
+            'postal_code': forms.TextInput(attrs={'class': 'w-full border px-4 py-2'}),
+        }
 
 
 class CustomLoginForm(AuthenticationForm):
@@ -111,3 +133,117 @@ class PasswordChangeForm(forms.Form):
             raise forms.ValidationError('Пароли не совпадают')
         
         return cleaned_data
+    
+
+class CustomUserCreationForm(UserCreationForm):
+    password1 = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'class': 'input-field'}),
+    )
+    password2 = forms.CharField(
+        label=_("Password confirmation"),
+        widget=forms.PasswordInput(attrs={'class': 'input-field'}),
+        strip=False,
+    )
+    terms = forms.BooleanField(
+        required=True,
+        label=_("I agree to the Terms and Privacy Policy"),
+    )
+    newsletter = forms.BooleanField(
+        required=False,
+        label=_("I want to receive news and special offers by email"),
+    )
+    
+    class Meta(UserCreationForm.Meta):
+        model  = User
+        fields = ('first_name', 'last_name', 'email', 'phone', 'password1', 'password2')
+        widgets = {
+            'email': forms.EmailInput(attrs={'class': 'input-field'}),
+            'first_name': forms.TextInput(attrs={'class': 'input-field'}),
+            'last_name': forms.TextInput(attrs={'class': 'input-field'}),
+            'phone': forms.TextInput(attrs={'class': 'input-field'}),
+        }
+        
+
+class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.EmailField(
+        label=_("Email"),
+        widget=forms.EmailInput(attrs={'class': 'input-field'}),
+    )
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={'class': 'input-field'}),
+    )
+    remember_me = forms.BooleanField(
+        required=False,
+        label=_("Remember me")
+    )
+
+    class Meta:
+        model = User
+        fields = ('email', 'password')
+
+class PasswordResetRequestForm(forms.Form):
+    email = forms.EmailField(
+        label=_("Email"),
+        widget=forms.EmailInput(attrs={'class': 'input-field'}),
+    )
+
+
+class OrderCreateForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['full_name', 'email', 'address', 'city', 'postal_code']
+        widgets = {
+            'full_name': forms.TextInput(attrs={'class': 'form-input'}),
+            'email': forms.EmailInput(attrs={'class': 'form-input'}),
+            'address': forms.TextInput(attrs={'class': 'form-input'}),
+            'city': forms.TextInput(attrs={'class': 'form-input'}),
+            'postal_code': forms.TextInput(attrs={'class': 'form-input'}),
+        }
+
+
+        from django import forms
+from .models import Review
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'w-full border rounded p-2',
+                'rows': 4,
+                'placeholder': 'Напишите ваш отзыв...'
+            })
+        }
+
+from django import forms
+from .models import ContactMessage
+import re
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = ContactMessage
+        fields = ['first_name', 'last_name', 'email', 'phone', 'message']
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'input-field', 'required': True}),
+            'last_name': forms.TextInput(attrs={'class': 'input-field', 'required': True}),
+            'email': forms.EmailInput(attrs={'class': 'input-field', 'required': True}),
+            'phone': forms.TextInput(attrs={'class': 'input-field'}),
+            'message': forms.Textarea(attrs={'class': 'input-field', 'rows': 5}),
+        }
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email and not forms.EmailField().clean(email):
+            raise forms.ValidationError("Введите корректный email.")
+        return email
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        if phone and not re.match(r'^\+?\d{7,15}$', phone):
+            raise forms.ValidationError("Введите корректный номер телефона (только цифры, от 7 до 15 знаков).")
+        return phone
