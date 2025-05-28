@@ -55,7 +55,7 @@ def home(request):
     },
     
     ],
-    products = Product.objects.all()
+    products = Product.objects.all()[:3]
 
     return render(request, 'shop/home.html', {
         'features': features,
