@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cart.push(item);
     }
     localStorage.setItem('cart', JSON.stringify(cart));
-    alert('Item added to cart');
+    showToast('Item added to cart');
   });
 });
 </script>
