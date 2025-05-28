@@ -20,7 +20,7 @@ class Product(models.Model):
         ('red',   'Red'),
         ('green', 'Green'),
         ('blue',  'Blue'),
-        ('black', 'Black')
+        ('black', 'Black'),
         ('orange', 'Orange')
         # extend if needed
     ]
