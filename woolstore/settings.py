@@ -12,25 +12,18 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-fzxcfjtgrv$28e!pc49gn8-(9)o*m#xx$5$n6a-z11-a2hx!@*'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -79,8 +72,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'woolstore.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
@@ -88,15 +79,12 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'USER': 'root',
-        'PASSWORD': 'adminadmin1',
+        'PASSWORD': 'root2005',
         'NAME': 'woolshop',
-
     }
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -114,8 +102,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -126,46 +112,41 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 
 
-AUTH_USER_MODEL = 'shop.CustomUser'  # Замените 'yourapp' на имя вашего приложения
+AUTH_USER_MODEL = 'shop.CustomUser'  
 
-# Настройка аутентификации по email
+
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-# Настройки для отправки email (для сброса пароля)
-# Пример настроек для SMTP
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.example.com'  # Замените на ваш SMTP-сервер
+EMAIL_HOST = 'smtp.example.com'  
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your_email@example.com'  # Замените на ваш email
-EMAIL_HOST_PASSWORD = 'your_password'  # Замените на ваш пароль
-DEFAULT_FROM_EMAIL = 'noreply@example.com'  # Email отправителя по умолчанию
+EMAIL_HOST_USER = 'your_email@example.com'  
+EMAIL_HOST_PASSWORD = 'your_password'  
+DEFAULT_FROM_EMAIL = 'noreply@example.com' 
 
-# Для разработки можно использовать имитацию отправки писем в консоль:
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# Настройка входа и перенаправлений
+
+
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'  # Замените на нужную страницу после входа
-LOGOUT_REDIRECT_URL = 'home'  # Замените на нужную страницу после выхода
+LOGIN_REDIRECT_URL = 'home'  
+LOGOUT_REDIRECT_URL = 'home'  
 
-# Сессии
-SESSION_COOKIE_AGE = 1209600  # 2 недели (в секундах) для опции "remember me"
 
-# Настройки сообщений
+SESSION_COOKIE_AGE = 1209600  
+
+
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'

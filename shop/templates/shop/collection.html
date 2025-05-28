@@ -45,25 +45,16 @@
                 <li class="py-1">
                     <a href="{% url 'collection' %}" class="hover:underline
                        {% if not selected.featured %}text-gray-900{% else %}text-gray-600{% endif %}">
-                       All Products
+                       Clear filter
                     </a>
                 </li>
             </ul>
 
             <!---- FILTER FORM ---->
-            <h2 class="text-base font-medium mb-4">Filter by</h2>
+            <h2 class="text-base font-medium mb-4">Filters</h2>
             <form id="filter-form" method="get" action="{% url 'collection' %}">
 
-                <!-- Product type (featured) -->
-                <div class="mb-6 filter-section">
-                    <h3 class="text-sm font-medium mb-3 flex justify-between items-center filter-toggle">
-                        Product type
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                  d="M19 9l-7 7-7-7"/>
-                        </svg>
-                    </h3>
-                </div>
+                
 
                 <!-- Price -->
                 <div class="mb-6 filter-section border-b border-gray-200 pb-6">
@@ -192,10 +183,10 @@
                                 {{ product.name }}
                             </a>
                         </h3>
-                        <p class="text-sm text-gray-800">${{ product.price }}</p>
+                        <p class="text-sm text-gray-800">€{{ product.price }}</p>
 
                         <a href="{% url 'product_detail' product.id %}"
-                           class="add-to-cart-btn mt-3 block">
+                            class="add-to-cart-btn mt-3 block text-center bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
                             View & Add to Cart
                         </a>
                     </div>

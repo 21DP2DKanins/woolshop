@@ -1,12 +1,12 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm, SetPasswordForm
-from .models import Profile
-from django import forms
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import (
+    UserCreationForm, AuthenticationForm,
+    PasswordResetForm, SetPasswordForm
+)
 from django.utils.translation import gettext_lazy as _
-from .models import Order
+from .models import Profile, Order, Review, ContactMessage
+import re
 
 User = get_user_model()
 
@@ -25,12 +25,12 @@ class SignUpForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if User.objects.filter(email=email).exists():
-            raise forms.ValidationError('Пользователь с таким email уже существует')
+            raise forms.ValidationError('A user with this email already exists')
         return email
     
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.username = self.cleaned_data['email']  # Используем email как username
+        user.username = self.cleaned_data['email']  
         user.email = self.cleaned_data['email']
         
         if commit:
@@ -41,10 +41,6 @@ class SignUpForm(UserCreationForm):
             user.profile.save()
         
         return user
-
-
-from django import forms
-from .models import Order
 
 class OrderCreateForm(forms.ModelForm):
     class Meta:
@@ -72,7 +68,7 @@ class CustomPasswordResetForm(PasswordResetForm):
     def clean_email(self):
         email = self.cleaned_data['email']
         if not User.objects.filter(email=email).exists():
-            raise forms.ValidationError('Пользователь с таким email не найден')
+            raise forms.ValidationError('No user with this email address was found')
         return email
 
 
@@ -121,7 +117,7 @@ class PasswordChangeForm(forms.Form):
     def clean_current_password(self):
         current_password = self.cleaned_data.get('current_password')
         if not self.user.check_password(current_password):
-            raise forms.ValidationError('Неверный текущий пароль')
+            raise forms.ValidationError('Invalid current password')
         return current_password
     
     def clean(self):
@@ -130,7 +126,7 @@ class PasswordChangeForm(forms.Form):
         new_password_confirm = cleaned_data.get('new_password_confirm')
         
         if new_password and new_password_confirm and new_password != new_password_confirm:
-            raise forms.ValidationError('Пароли не совпадают')
+            raise forms.ValidationError('The passwords don\'t match')
         
         return cleaned_data
     
@@ -204,10 +200,6 @@ class OrderCreateForm(forms.ModelForm):
             'postal_code': forms.TextInput(attrs={'class': 'form-input'}),
         }
 
-
-        from django import forms
-from .models import Review
-
 class ReviewForm(forms.ModelForm):
     class Meta:
         model = Review
@@ -216,13 +208,9 @@ class ReviewForm(forms.ModelForm):
             'content': forms.Textarea(attrs={
                 'class': 'w-full border rounded p-2',
                 'rows': 4,
-                'placeholder': 'Напишите ваш отзыв...'
+                'placeholder': 'Write your review...'
             })
         }
-
-from django import forms
-from .models import ContactMessage
-import re
 
 class ContactForm(forms.ModelForm):
     class Meta:
@@ -239,11 +227,11 @@ class ContactForm(forms.ModelForm):
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if email and not forms.EmailField().clean(email):
-            raise forms.ValidationError("Введите корректный email.")
+            raise forms.ValidationError("Enter a valid email.")
         return email
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
         if phone and not re.match(r'^\+?\d{7,15}$', phone):
-            raise forms.ValidationError("Введите корректный номер телефона (только цифры, от 7 до 15 знаков).")
+            raise forms.ValidationError("Enter the correct phone number (digits only, 7 to 15 characters).")
         return phone

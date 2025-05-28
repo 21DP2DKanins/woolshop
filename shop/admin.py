@@ -9,7 +9,8 @@ from .models import (
     Profile,
     CustomUser,
     Order,
-    OrderItem
+    OrderItem,
+    ProductVariant
 )
 
 # --- Регистрация модели CustomUser ---
@@ -81,3 +82,10 @@ from .models import ContactMessage
 class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ('first_name', 'last_name', 'email', 'message')
     search_fields = ('first_name', 'last_name', 'email', 'message')
+
+
+@admin.register(ProductVariant)
+class ProductVariantAdmin(admin.ModelAdmin):
+    list_display = ['product', 'color', 'size', 'stock']
+    list_filter = ['color', 'size', 'product']
+    search_fields = ['product__name']

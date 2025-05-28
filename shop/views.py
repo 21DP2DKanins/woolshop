@@ -24,7 +24,6 @@ from django.db.models.query_utils import Q
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.http import HttpResponse
-
 from .forms import CustomUserCreationForm, CustomAuthenticationForm, PasswordResetRequestForm
 
 import json
@@ -54,7 +53,7 @@ def home(request):
         'title': 'Производительность',
         'text': 'Высокая скорость и масштабируемость.'
     },
-    # добавьте столько элементов, сколько нужно
+    
     ],
     products = Product.objects.all()
 
@@ -67,9 +66,6 @@ def home(request):
 def index(request):
     products = Product.objects.all()
     return render(request, 'shop/index.html', {'products': products})
-
-
-
 
 
 
@@ -167,10 +163,6 @@ def cart_view(request):
     return render(request, 'shop/cart.html')
 
 
-
-
-
-
 def contact(request):
     return render(request, 'shop/contact.html')
 
@@ -193,41 +185,10 @@ def password_reset(request):
     return render(request, 'shop/password_reset.html')
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 from .forms import (
     SignUpForm, CustomLoginForm, CustomPasswordResetForm, 
     ProfileUpdateForm, PasswordChangeForm
 )
-
-
-
-
-
-
-
-
 
 class CustomLoginView(LoginView):
     form_class = CustomLoginForm
@@ -236,8 +197,6 @@ class CustomLoginView(LoginView):
     def form_valid(self, form):
         remember = form.cleaned_data.get('remember', False)
         if not remember:
-            # Если пользователь не выбрал "Запомнить меня", 
-            # устанавливаем время жизни сессии до закрытия браузера
             self.request.session.set_expiry(0)
         
         return super().form_valid(form)
@@ -277,7 +236,7 @@ def account_update_view(request):
         form = ProfileUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Профиль успешно обновлен!')
+            messages.success(request, 'Profile has been successfully updated!')
             return redirect('account')
     else:
         form = ProfileUpdateForm(instance=request.user)
@@ -290,10 +249,10 @@ def account_change_password_view(request):
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
-            # Меняем пароль
+            
             request.user.set_password(form.cleaned_data['new_password'])
             request.user.save()
-            # Обновляем сессию, чтобы пользователь не вылетел после смены пароля
+            
             update_session_auth_hash(request, request.user)
             messages.success(request, 'Пароль успешно изменен!')
             return redirect('account')
@@ -312,15 +271,15 @@ def account_orders_view(request):
 
 @login_required
 def account_wishlist_view(request):
-    # Здесь будет логика получения избранных товаров пользователя
-    wishlist = []  # Заглушка, в реальном проекте здесь будут товары из БД
+    
+    wishlist = []  
     return render(request, 'account_wishlist.html', {'wishlist': wishlist})
 
 
 @login_required
 def account_addresses_view(request):
-    # Здесь будет логика получения адресов пользователя
-    addresses = []  # Заглушка, в реальном проекте здесь будут адреса из БД
+    
+    addresses = []  
     return render(request, 'account_addresses.html', {'addresses': addresses})
 
 
@@ -333,15 +292,15 @@ def signup_view(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            # Set password here because our form doesn't match Django's form fields exactly
+            
             user.set_password(form.cleaned_data['password1'])
             user.newsletter = form.cleaned_data.get('newsletter', False)
             user.save()
             
-            # Auto-login after registration
+            
             login(request, user)
             messages.success(request, _("Registration successful! Welcome to our shop."))
-            return redirect('account')  # or wherever you want to redirect after signup
+            return redirect('account')  
         else:
             for field, errors in form.errors.items():
                 for error in errors:
@@ -356,7 +315,7 @@ def login_view(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('username')  # username is actually email
+            email = form.cleaned_data.get('username')  
             password = form.cleaned_data.get('password')
             remember_me = form.cleaned_data.get('remember_me')
             
@@ -364,9 +323,9 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 
-                # Handle "remember me" functionality
+                
                 if not remember_me:
-                    request.session.set_expiry(0)  # Session expires when browser closes
+                    request.session.set_expiry(0)  
                 
                 messages.success(request, _("You have been successfully logged in."))
                 
@@ -467,7 +426,7 @@ def checkout_view(request):
         if form.is_valid() and cart:
             order = form.save(commit=False)
             order.user = request.user
-            order.paid = True  # или подключить реальную оплату
+            order.paid = True  
             order.save()
 
             for item in cart:
@@ -478,9 +437,9 @@ def checkout_view(request):
                     quantity=item.get('quantity')
                 )
 
-            # Очистка
+            
             request.session.pop('cart', None)
-            sessionStorage = request.session  # если хочешь сбрасывать и sessionStorage
+            sessionStorage = request.session  
             return render(request, 'shop/checkout_success.html', {'order': order})
     else:
         form = OrderCreateForm()
@@ -506,7 +465,7 @@ def account_reviews_view(request):
             review = form.save(commit=False)
             review.user = request.user
             review.save()
-            messages.success(request, 'Ваш отзыв отправлен!')
+            messages.success(request, 'Your feedback has been sent!')
             return redirect('account_reviews')
     else:
         form = ReviewForm()
@@ -525,10 +484,10 @@ def contact(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "✅ Ваше сообщение успешно отправлено. Мы свяжемся с вами в ближайшее время.")
+            messages.success(request, "Your message has been successfully sent. We will contact you shortly.")
             return redirect('contact')
         else:
-            messages.error(request, "⚠️ Проверьте правильность введённых данных.")
+            messages.error(request, "Check that the data entered is correct.")
     else:
         form = ContactForm()
 

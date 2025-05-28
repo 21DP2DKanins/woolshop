@@ -8,7 +8,7 @@ class EmailBackend(ModelBackend):
     Аутентификация по email вместо username.
     """
     def authenticate(self, request, username=None, password=None, **kwargs):
-        # здесь `username` — это переданный email
+        
         try:
             user = User.objects.get(email=username)
         except User.DoesNotExist:

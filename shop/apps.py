@@ -7,10 +7,10 @@ class ShopConfig(AppConfig):
 
 class YourAppConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'yourapp'  # Замените на имя вашего приложения
+    name = 'yourapp'  
     
     def ready(self):
         """
         Импортируйте файл сигналов, чтобы подключить сигналы в Django
         """
-        import yourapp.signals  # Замените 'yourapp' на имя вашего приложения
+        import yourapp.signals  
