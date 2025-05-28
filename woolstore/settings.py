@@ -22,7 +22,7 @@ SECRET_KEY = 'django-insecure-fzxcfjtgrv$28e!pc49gn8-(9)o*m#xx$5$n6a-z11-a2hx!@*
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://woolshop.onrender.com"]
+ALLOWED_HOSTS = ["woolshop.onrender.com"]
 
 
 INSTALLED_APPS = [
