@@ -20,6 +20,7 @@ class Product(models.Model):
         ('red',   'Red'),
         ('green', 'Green'),
         ('blue',  'Blue'),
+        ('black', 'Black')
         # extend if needed
     ]
     color = models.CharField(
@@ -34,6 +35,7 @@ class Product(models.Model):
         ('M',  'M'),
         ('L',  'L'),
         ('XL', 'XL'),
+        ('One size', 'One size')
         # extend if needed
     ]
     size = models.CharField(
