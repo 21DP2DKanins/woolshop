@@ -38,7 +38,7 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex flex-col md:flex-row">
 
-        <!------- LEFT SIDEBAR FILTERS ------->
+        
         <aside class="w-full md:w-1/5 pr-0 md:pr-8 border-r border-gray-200">
             <h2 class="text-base font-medium mb-4">Browse by</h2>
             <ul class="mb-8 border-b border-gray-200 pb-6">
@@ -71,7 +71,7 @@
                             <input type="range" id="min-range" min="{{ price_min }}" max="{{ price_max }}"
                                    value="{{ selected.min_price|default:price_min }}" class="w-full">
                             <span id="min-price-label" class="text-xs text-gray-600 w-10 text-right">
-                                ${{ selected.min_price|default:price_min }}
+                                €{{ selected.min_price|default:price_min }}
                             </span>
                         </div>
 
@@ -79,7 +79,7 @@
                             <input type="range" id="max-range" min="{{ price_min }}" max="{{ price_max }}"
                                    value="{{ selected.max_price|default:price_max }}" class="w-full">
                             <span id="max-price-label" class="text-xs text-gray-600 w-10 text-right">
-                                ${{ selected.max_price|default:price_max }}
+                                €{{ selected.max_price|default:price_max }}
                             </span>
                         </div>
 
@@ -134,7 +134,7 @@
             </form>
         </aside>
 
-        <!------- PRODUCT GRID ------->
+        
         <main class="w-full md:w-4/5 mt-8 md:mt-0 md:pl-8">
             <!-- Updated responsive header & sort -->
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-2 sm:space-y-0">
@@ -263,8 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === minR) maxR.value = minR.value;
             else minR.value = maxR.value;
         }
-        minL.textContent = '$' + minR.value;
-        maxL.textContent = '$' + maxR.value;
+        minL.textContent = '€' + minR.value;
+        maxL.textContent = '€' + maxR.value;
         minI.value = minR.value;
         maxI.value = maxR.value;
     };

@@ -7,4 +7,9 @@
   <p class="text-lg">Order Number: <strong>#{{ order.id }}</strong></p>
   <a href="{% url 'home' %}" class="btn-primary mt-6 inline-block">Return to Home</a>
 </div>
+
+<script>
+  // Очистка корзины в localStorage
+  localStorage.removeItem('cart');
+</script>
 {% endblock %}
