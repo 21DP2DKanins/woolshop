@@ -76,11 +76,11 @@ WSGI_APPLICATION = 'woolstore.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        'USER': 'root',
-        'PASSWORD': 'root2005',
-        'NAME': 'woolshop',
+        'HOST': 'dpg-d0rlfi3ipnbc73bbtgc0-a',
+        'PORT': '5432',
+        'USER': 'woolshopdatabase_user',
+        'PASSWORD': 'D51mVQGRYqCXDpUT6mXleXfYJbFn8sOd',
+        'NAME': 'woolshopdatabase',
     }
 }
 
