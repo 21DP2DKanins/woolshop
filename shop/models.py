@@ -21,7 +21,7 @@ class Product(models.Model):
         ('green', 'Green'),
         ('blue',  'Blue'),
         ('black', 'Black'),
-        ('orange', 'Orange')
+        ('orange', 'Orange'),
         # extend if needed
     ]
     color = models.CharField(
