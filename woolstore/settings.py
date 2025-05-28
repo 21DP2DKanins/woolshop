@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'woolstore.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql',
         'HOST': 'dpg-d0rlfi3ipnbc73bbtgc0-a',
         'PORT': '5432',
         'USER': 'woolshopdatabase_user',
