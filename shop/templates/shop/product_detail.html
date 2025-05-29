@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
       variantId: currentVid,
       name: "{{ product.name|escapejs }}",
       price: {{ product.price }},
-      image: "{{ product.image.url }}",
+      image: document.getElementById('main-image').src,
       color: colorSelect.options[colorSelect.selectedIndex].text,
       size: sizeSelect.value,
       quantity: parseInt(qtyInput.value, 10),
