@@ -8,7 +8,6 @@
     .product-card           { transition: transform .3s ease }
     .product-card:hover     { transform: translateY(-5px) }
 
-    /*-- sidebar --*/
     .filter-section h3      { cursor:pointer }
     .filter-toggle svg      { transition:transform .2s }
     .color-swatch           {
@@ -17,7 +16,6 @@
     }
     .color-swatch.selected  { box-shadow:0 0 0 2px #fff,0 0 0 3px #000 }
 
-    /*-- buttons --*/
     .add-to-cart-btn        {
         width:100%;padding:8px 0;font-size:14px;
         border:1px solid #e5e5e5;background:transparent;color:#333;
@@ -25,7 +23,6 @@
     }
     .add-to-cart-btn:hover  { background:#f5f5f5 }
 
-    /*-- badges --*/
     .product-badge          {
         position:absolute;top:10px;right:10px;background:#4b6043;
         color:#fff;padding:4px 8px;font-size:12px
@@ -38,23 +35,44 @@
 <div class="container mx-auto px-4 py-8">
     <div class="flex flex-col md:flex-row">
 
-        
         <aside class="w-full md:w-1/5 pr-0 md:pr-8 border-r border-gray-200">
             <h2 class="text-base font-medium mb-4">Browse by</h2>
             <ul class="mb-8 border-b border-gray-200 pb-6">
                 <li class="py-1">
-                    <a href="{% url 'collection' %}" class="hover:underline
-                       {% if not selected.featured %}text-gray-900{% else %}text-gray-600{% endif %}">
-                       Clear filter
+                    <a href="{% url 'collection' %}" class="hover:underline text-blue-600">
+                       Clear all filters
                     </a>
                 </li>
             </ul>
 
-            <!---- FILTER FORM ---->
-            <h2 class="text-base font-medium mb-4">Filters</h2>
             <form id="filter-form" method="get" action="{% url 'collection' %}">
 
-                
+                <!-- Category -->
+                <div class="mb-6 filter-section border-b border-gray-200 pb-6">
+                    <h3 class="text-sm font-medium mb-3 flex justify-between items-center filter-toggle">
+                        Category
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </h3>
+                    <div class="space-y-2">
+                        {% for category in categories %}
+                            <label class="flex items-center text-sm text-gray-700">
+                                <input
+                                    type="checkbox"
+                                    name="category"
+                                    value="{{ category.slug }}"
+                                    class="mr-2"
+                                    {% if category.slug in selected.category %}checked{% endif %}
+                                >
+                                {{ category.name }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+
 
                 <!-- Price -->
                 <div class="mb-6 filter-section border-b border-gray-200 pb-6">
@@ -131,12 +149,11 @@
                         {% endfor %}
                     </div>
                 </div>
+
             </form>
         </aside>
 
-        
         <main class="w-full md:w-4/5 mt-8 md:mt-0 md:pl-8">
-            <!-- Updated responsive header & sort -->
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-2 sm:space-y-0">
                 <h1 class="text-2xl font-normal">All Products</h1>
 
@@ -172,8 +189,7 @@
                         {% endif %}
 
                         <a href="{% url 'product_detail' product.id %}">
-                            <img src="{% if product.image %}{{ product.image.url }}{% else %}
-                                      {% static 'images/placeholder.jpg' %}{% endif %}"
+                            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'images/placeholder.jpg' %}{% endif %}"
                                  alt="{{ product.name }}"
                                  class="w-full h-64 object-cover">
                         </a>
@@ -191,46 +207,51 @@
                         </a>
                     </div>
                 {% empty %}
-                    <p class="col-span-4 text-center text-gray-600 py-12">
-                        No products found.
-                    </p>
+                    <p class="col-span-4 text-center text-gray-600 py-12">No products found.</p>
                 {% endfor %}
             </div>
         </main>
     </div>
 </div>
 
-<div id="toast-container" class="fixed bottom-4 right-4 space-y-2 z-50"></div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', () => {
 
-    /*-- keep sort selection across reloads --*/
+    const form = document.getElementById('filter-form');
+
+    // Категории — чекбоксы квадратные
+document.querySelectorAll('#filter-form input[name="category"]').forEach(cb => {
+    cb.addEventListener('change', () => document.getElementById('filter-form').submit());
+});
+
+
+    // Сортировка
     const sortSelect = document.getElementById('sort-select');
-    const params     = new URLSearchParams(location.search);
+    const params = new URLSearchParams(location.search);
     if (params.get('sort')) sortSelect.value = params.get('sort');
     sortSelect.addEventListener('change', () => {
         params.set('sort', sortSelect.value);
         location.search = params.toString();
     });
 
-    /*-- accordion toggles --*/
-    document.querySelectorAll('.filter-toggle').forEach(h => {
-        h.addEventListener('click', () => {
-            const body = h.nextElementSibling;
-            const icon = h.querySelector('svg');
-            const hide = body.style.display === 'none';
-            body.style.display = hide ? 'block' : 'none';
-            icon.style.transform = hide ? 'rotate(0)' : 'rotate(-90deg)';
+    // Аккордеоны
+    document.querySelectorAll('.filter-toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+            const content = toggle.nextElementSibling;
+            const icon = toggle.querySelector('svg');
+            const isHidden = window.getComputedStyle(content).display === 'none';
+            content.style.display = isHidden ? 'block' : 'none';
+            icon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
         });
     });
 
-    /*-- color swatches --*/
+    // Цвета
     document.querySelectorAll('.color-swatch').forEach(swatch => {
         swatch.addEventListener('click', () => {
-            const input  = document.getElementById('color-input');
+            const input = document.getElementById('color-input');
             const active = swatch.classList.contains('selected');
 
             document.querySelectorAll('.color-swatch.selected').forEach(s => s.classList.remove('selected'));
@@ -241,16 +262,21 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 input.value = '';
             }
-            document.getElementById('filter-form').submit();
+            form.submit();
         });
     });
 
-    /*-- checkboxes auto submit --*/
+    // Чекбоксы (размер)
     document.querySelectorAll('#filter-form input[type="checkbox"]').forEach(cb => {
-        cb.addEventListener('change', () => document.getElementById('filter-form').submit());
+        cb.addEventListener('change', () => form.submit());
     });
 
-    /*-- price sliders --*/
+    // Радио-кнопки (категория)
+    document.querySelectorAll('#filter-form input[name="category"]').forEach(radio => {
+        radio.addEventListener('change', () => form.submit());
+    });
+
+    // Слайдеры
     const minR = document.getElementById('min-range');
     const maxR = document.getElementById('max-range');
     const minL = document.getElementById('min-price-label');
@@ -271,8 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     minR.addEventListener('input', clamp);
     maxR.addEventListener('input', clamp);
-    minR.addEventListener('change', () => document.getElementById('filter-form').submit());
-    maxR.addEventListener('change', () => document.getElementById('filter-form').submit());
+    minR.addEventListener('change', () => form.submit());
+    maxR.addEventListener('change', () => form.submit());
 });
 </script>
 {% endblock %}

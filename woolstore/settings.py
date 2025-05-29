@@ -23,8 +23,16 @@ SECRET_KEY = 'django-insecure-fzxcfjtgrv$28e!pc49gn8-(9)o*m#xx$5$n6a-z11-a2hx!@*
 
 DEBUG = True
 
-ALLOWED_HOSTS = ["woolshop.onrender.com"]
+ALLOWED_HOSTS = ["woolshop.onrender.com", "127.0.0.1"]
 
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': env('dzfhibvsh'),
+    'API_KEY':    env('222873516227891'),
+    'API_SECRET': env('1_UZQ3Zr6Uh4ObHSAmN_8yYZ8Pk'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+MEDIA_URL = '/media/'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -37,6 +45,8 @@ INSTALLED_APPS = [
     'tailwind',   
     'theme',      
     "widget_tweaks",
+    'cloudinary',
+    'cloudinary_storage',
 ]
 
 TAILWIND_APP_NAME = 'theme'

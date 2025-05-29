@@ -5,7 +5,19 @@ from django.dispatch import receiver
 from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
-# Product
+
+class Category(models.Model):
+    name = models.CharField("Category Name", max_length=100)
+    slug = models.SlugField("Slug", unique=True)
+
+    class Meta:
+        verbose_name = "Category"
+        verbose_name_plural = "Categories"
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     name        = models.CharField(max_length=200, verbose_name="Name")
     description = models.TextField(blank=True, verbose_name="Description")
@@ -15,14 +27,14 @@ class Product(models.Model):
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
     updated_at  = models.DateTimeField(auto_now=True, verbose_name="Updated at")
 
-    # --- new fields ---
+   
     COLOR_CHOICES = [
         ('red',   'Red'),
         ('green', 'Green'),
         ('blue',  'Blue'),
         ('black', 'Black'),
         ('orange', 'Orange'),
-        # extend if needed
+        
     ]
     color = models.CharField(
         max_length=20,
@@ -36,7 +48,7 @@ class Product(models.Model):
         ('M',  'M'),
         ('L',  'L'),
         ('XL', 'XL'),
-        # extend if needed
+        
     ]
     size = models.CharField(
         max_length=5,
@@ -44,7 +56,16 @@ class Product(models.Model):
         default='M',
         verbose_name="Size"
     )
-    # -----------------
+
+    category = models.ForeignKey(
+        'Category',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='products',
+        verbose_name="Category"
+    )
+
 
     class Meta:
         ordering = ['-created_at']
@@ -209,4 +230,6 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} — {self.email}"
+    
+
 

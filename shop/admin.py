@@ -1,5 +1,4 @@
 
-# shop/admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
@@ -10,10 +9,11 @@ from .models import (
     CustomUser,
     Order,
     OrderItem,
-    ProductVariant
+    ProductVariant,
+    Category
 )
 
-# --- Регистрация модели CustomUser ---
+
 class CustomUserAdmin(BaseUserAdmin):
     model = CustomUser
     ordering = ('email',)
@@ -35,26 +35,26 @@ class CustomUserAdmin(BaseUserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     filter_horizontal = ('groups', 'user_permissions',)
 
-# --- Регистрация модели Product ---
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'price', 'stock', 'color', 'size', 'created_at')
     list_filter = ('color', 'size', 'created_at')
     search_fields = ('name', 'description')
 
-# --- Регистрация модели Profile ---
+
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'phone', 'birth_date', 'newsletter')
     search_fields = ('user__email', 'phone')
     list_filter = ('newsletter',)
 
-# --- Inline для OrderItem в Order ---
+
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
     extra = 0
 
-# --- Регистрация модели Order ---
+
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'full_name', 'email', 'city', 'created_at', 'paid')
@@ -63,13 +63,13 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline]
     readonly_fields = ('created_at',)
 
-# --- Регистрация модели OrderItem ---
+
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ('order', 'product_name', 'price', 'quantity')
     search_fields = ('product_name', 'order__id')
 
-# Отменяем регистрацию стандартного пользователя и регистрируем CustomUser
+
 try:
     admin.site.unregister(CustomUser)
 except admin.sites.NotRegistered:
@@ -89,3 +89,23 @@ class ProductVariantAdmin(admin.ModelAdmin):
     list_display = ['product', 'color', 'size', 'stock']
     list_filter = ['color', 'size', 'product']
     search_fields = ['product__name']
+
+from django.contrib import admin
+from .models import Review 
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'created_at', 'short_content')
+    search_fields = ('user__email', 'content')
+    list_filter = ('created_at',)
+
+    def short_content(self, obj):
+        return (obj.content[:75] + '...') if len(obj.content) > 75 else obj.content
+    short_content.short_description = "Review"
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'slug')
+    prepopulated_fields = {'slug': ('name',)}
+    search_fields = ('name',)

@@ -29,13 +29,13 @@ from .forms import CustomUserCreationForm, CustomAuthenticationForm, PasswordRes
 import json
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import Order, OrderItem, ProductVariant
+from .models import Order, OrderItem, ProductVariant, Category
 from .forms import OrderCreateForm
 
 User = get_user_model()
 
 
-# Create your views here.
+
 def home(request):
     features = [
     {
@@ -73,39 +73,35 @@ from django.shortcuts import render, get_object_or_404
 from .models import Product
 
 def collection(request):
-    qs = Product.objects.all()
+    qs = Product.objects.all().prefetch_related('variants', 'category')
 
-    # 1. featured
-    if request.GET.get('featured') == '1':
-        qs = qs.filter(featured=True)
+    category_slugs = request.GET.getlist('category')
+    if category_slugs:
+        qs = qs.filter(category__slug__in=category_slugs)
 
-    # 2. price range
-    try:
-        min_price = float(request.GET.get('min_price', 0))
-        max_price = float(request.GET.get('max_price', 0))
-    except ValueError:
-        min_price = max_price = 0
-    if min_price and max_price:
-        qs = qs.filter(price__gte=min_price, price__lte=max_price)
-
-    # 3. color
     color = request.GET.get('color')
-    if color:
+    if color not in (None, '', 'None'):
         qs = qs.filter(variants__color=color)
+    else:
+        color = ''
 
-    # 4. sizes
     sizes = request.GET.getlist('size')
     if sizes:
         qs = qs.filter(variants__size__in=sizes)
 
-    # 5. sorting
+    try:
+        min_price = float(request.GET.get('min_price', 0))
+        max_price = float(request.GET.get('max_price', 0))
+        if min_price and max_price:
+            qs = qs.filter(price__gte=min_price, price__lte=max_price)
+    except (TypeError, ValueError):
+        min_price = max_price = 0
+
     sort = request.GET.get('sort')
     if sort == 'price_low':
         qs = qs.order_by('price')
     elif sort == 'price_high':
         qs = qs.order_by('-price')
-    elif sort == 'newest':
-        qs = qs.order_by('-created')
     elif sort == 'name_az':
         qs = qs.order_by('name')
     elif sort == 'name_za':
@@ -113,10 +109,9 @@ def collection(request):
 
     qs = qs.distinct()
 
-    # build filter options
-    all_variants = Product.variants.field.model.objects.filter(product__in=qs)
-    available_colors = sorted({v.color for v in all_variants})
-    available_sizes  = sorted({v.size  for v in all_variants})
+    all_variants = ProductVariant.objects.filter(product__in=qs)
+    available_colors = sorted(set(v.color for v in all_variants))
+    available_sizes = sorted(set(v.size for v in all_variants))
 
     prices = qs.values_list('price', flat=True)
     price_min = int(min(prices)) if prices else 0
@@ -126,10 +121,11 @@ def collection(request):
         'products': qs,
         'available_colors': available_colors,
         'available_sizes': available_sizes,
+        'categories': Category.objects.all(),
         'price_min': price_min,
         'price_max': price_max,
         'selected': {
-            'featured': request.GET.get('featured'),
+            'category': category_slugs,
             'color': color,
             'sizes': sizes,
             'min_price': min_price,
