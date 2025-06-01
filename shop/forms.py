@@ -16,7 +16,7 @@ class SignUpForm(UserCreationForm):
     email = forms.EmailField(max_length=254, required=True)
     phone = forms.CharField(max_length=20, required=False)
     newsletter = forms.BooleanField(required=False)
-    terms = forms.BooleanField(required=True)
+    
     
     class Meta:
         model = User
@@ -142,10 +142,7 @@ class CustomUserCreationForm(UserCreationForm):
         widget=forms.PasswordInput(attrs={'class': 'input-field'}),
         strip=False,
     )
-    terms = forms.BooleanField(
-        required=True,
-        label=_("I agree to the Terms and Privacy Policy"),
-    )
+    
     newsletter = forms.BooleanField(
         required=False,
         label=_("I want to receive news and special offers by email"),

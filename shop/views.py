@@ -426,35 +426,54 @@ def checkout_view(request):
         if form.is_valid() and cart:
             order = form.save(commit=False)
             order.user = request.user
-            order.paid = True  
-            order.save()
+            order.paid = True
+
+            # Сбор всех ошибок
+            error_messages = []
+            valid_variants = []
 
             for item in cart:
-                quantity = item.get('quantity', 1)
                 variant_id = item.get('variantId')
+                quantity = item.get('quantity', 1)
 
-                # Получаем нужный вариант
                 variant = ProductVariant.objects.filter(id=variant_id).select_related('product').first()
+
                 if not variant:
+                    error_messages.append(f"Product variant not found (ID: {variant_id}).")
                     continue
 
-                # Создаём OrderItem
+                if quantity > variant.stock:
+                    error_messages.append(
+                        f'Not enough stock for {variant.product.name} ({variant.color}/{variant.size}). '
+                        f'Only {variant.stock} left.'
+                    )
+                    continue
+
+                valid_variants.append((item, variant))
+
+            if error_messages:
+                for msg in error_messages:
+                    messages.error(request, msg)
+                return redirect('checkout')
+
+            # Всё ок — создаём заказ
+            order.save()
+
+            for item, variant in valid_variants:
+                quantity = item.get('quantity', 1)
                 OrderItem.objects.create(
                     order=order,
                     product_name=f"{variant.product.name} ({variant.color}/{variant.size})",
                     price=item.get('price'),
                     quantity=quantity
                 )
-
-                # Уменьшаем stock
                 variant.stock = max(variant.stock - quantity, 0)
                 variant.save()
 
             request.session.pop('cart', None)
             return render(request, 'shop/checkout_success.html', {'order': order})
-    
+
     else:
-        ###
         initial_data = {}
         if request.user.is_authenticated:
             initial_data = {

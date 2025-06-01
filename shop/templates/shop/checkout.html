@@ -3,72 +3,101 @@
 
 {% load widget_tweaks %}
 {% block content %}
+
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const cart = JSON.parse(sessionStorage.getItem('cart') || '[]');
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const input = document.getElementById('cart-json-input');
     if (input) {
       input.value = JSON.stringify(cart);
     }
   });
 </script>
+
 <div class="container mx-auto px-4 py-8 max-w-2xl">
   <h2 class="text-2xl font-bold mb-6">Checkout</h2>
-<form method="POST" class="space-y-6">
-  {% csrf_token %}
-  {{ form.non_field_errors }}
-  <div class="grid gap-4">
+
+  <!-- Сообщения Django (скрытые, только для JS) -->
+  <div id="django-messages" class="hidden">
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+  </div>
+
+  <!-- Баннер недостатка товара -->
+  <div class="hidden flex items-start gap-3 rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-800 shadow-sm" role="alert" id="stock-error-banner">
+    <svg class="h-5 w-5 mt-0.5 shrink-0 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+      <path fill-rule="evenodd" d="M18 10A8 8 0 11 2 10a8 8 0 0116 0zM9 7a1 1 0 112 0v3a1 1 0 01-2 0V7zm1 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+    </svg>
     <div>
-      <label class="block mb-1 text-gray-700 font-medium">Full Name</label>
-      {{ form.full_name|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
-    </div>
-    <div>
-      <label class="block mb-1 text-gray-700 font-medium">Email</label>
-      {{ form.email|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
-    </div>
-    <div>
-      <label class="block mb-1 text-gray-700 font-medium">City</label>
-      {{ form.city|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
-    </div>
-    <div>
-      <label class="block mb-1 text-gray-700 font-medium">Address</label>
-      {{ form.address|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
-    </div>
-    <div>
-      <label class="block mb-1 text-gray-700 font-medium">Postal Code</label>
-      {{ form.postal_code|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+      <p class="font-semibold">Error</p>
+      <p class="mt-1" id="stock-error-text">Not enough stock</p>
     </div>
   </div>
 
-  <h3 class="text-xl font-semibold mt-8 mb-4">Card Payment</h3>
-  <div class="grid gap-4">
-    <div>
-      <input id="card-number" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black" type="text" placeholder="Card Number" required>
-      <p id="error-card-number" class="text-red-500 text-sm mt-1 hidden"></p>
-    </div>
-  
-    <div>
-      <input id="card-expiry" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black" type="text" placeholder="Expiry Date (MM/YY)" required>
-      <p id="error-card-expiry" class="text-red-500 text-sm mt-1 hidden"></p>
-    </div>
-  
-    <div>
-      <input id="card-cvv" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black" type="text" placeholder="CVV" required>
-      <p id="error-card-cvv" class="text-red-500 text-sm mt-1 hidden"></p>
-    </div>
-  </div>
+  <form method="POST" class="space-y-6">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
 
-  <input type="hidden" name="cart_json" id="cart-json-input">
+    <div class="grid gap-4">
+      <div>
+        <label class="block mb-1 text-gray-700 font-medium">Full Name</label>
+        {{ form.full_name|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+      </div>
+      <div>
+        <label class="block mb-1 text-gray-700 font-medium">Email</label>
+        {{ form.email|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+      </div>
+      <div>
+        <label class="block mb-1 text-gray-700 font-medium">City</label>
+        {{ form.city|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+      </div>
+      <div>
+        <label class="block mb-1 text-gray-700 font-medium">Address</label>
+        {{ form.address|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+      </div>
+      <div>
+        <label class="block mb-1 text-gray-700 font-medium">Postal Code</label>
+        {{ form.postal_code|add_class:"w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" }}
+      </div>
+    </div>
 
-  <button type="submit" class="w-full mt-6 bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition">Complete Order</button>
-</form>
+    <h3 class="text-xl font-semibold mt-8 mb-4">Card Payment</h3>
+    <div class="grid gap-4">
+      <div>
+        <input id="card-number" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black" type="text" placeholder="Card Number" required>
+        <p id="error-card-number" class="text-red-500 text-sm mt-1 hidden"></p>
+      </div>
+      <div>
+        <input id="card-expiry" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black" type="text" placeholder="Expiry Date (MM/YY)" required>
+        <p id="error-card-expiry" class="text-red-500 text-sm mt-1 hidden"></p>
+      </div>
+      <div>
+        <input id="card-cvv" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black" type="text" placeholder="CVV" required>
+        <p id="error-card-cvv" class="text-red-500 text-sm mt-1 hidden"></p>
+      </div>
+    </div>
 
+    <input type="hidden" name="cart_json" id="cart-json-input">
+
+    <!-- TOAST для ошибок -->
+    <div id="toast-error" class="fixed bottom-6 right-6 z-50 max-w-sm w-full bg-red-100 text-red-800 px-4 py-3 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-300">
+      <p id="toast-error-text" class="text-sm font-medium"></p>
+    </div>
+
+    <button type="submit" class="w-full mt-6 bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition">Complete Order</button>
+  </form>
 </div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const form = document.querySelector("form");
-  
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const input = document.getElementById("cart-json-input");
+    if (input) {
+      input.value = JSON.stringify(cart);
+    }
+
     const fields = {
       number: {
         input: document.getElementById("card-number"),
@@ -89,14 +118,16 @@
         message: "CVV must be 3 or 4 digits."
       }
     };
-  
+
     form.addEventListener("submit", function (e) {
       let hasErrors = false;
-  
+      let cartErrors = [];
+
+      // Card validation
       for (const key in fields) {
         const field = fields[key];
         const value = field.input.value.trim();
-  
+
         if (!field.validate(value)) {
           field.error.textContent = field.message;
           field.error.classList.remove("hidden");
@@ -108,12 +139,52 @@
           field.input.classList.remove("border-red-500");
         }
       }
-  
+
+      // Stock validation from localStorage
+      for (const item of cart) {
+        const maxStock = item.stock;
+        const qty = item.quantity;
+
+        if (qty > maxStock) {
+          cartErrors.push(`"${item.name}" (${item.color}/${item.size}) — only ${maxStock} left in stock.`);
+          hasErrors = true;
+        }
+      }
+
+      if (cartErrors.length > 0) {
+        const banner = document.getElementById("stock-error-banner");
+        const text = document.getElementById("stock-error-text");
+
+        text.innerHTML = cartErrors.join("<br>");
+        banner.classList.remove("hidden");
+      }
+
       if (hasErrors) {
         e.preventDefault();
       }
     });
+
+    // Показать toast из Django messages
+    const djangoMessages = document.getElementById("django-messages");
+    if (djangoMessages) {
+      const toast = document.getElementById("toast-error");
+      const toastText = document.getElementById("toast-error-text");
+
+      const messages = Array.from(djangoMessages.querySelectorAll("p")).map(p => p.textContent.trim());
+      const messageText = messages.join("\n");
+
+      if (messageText && toast && toastText) {
+        toastText.textContent = messageText;
+        toast.classList.remove("opacity-0", "pointer-events-none");
+        toast.classList.add("opacity-100");
+
+        setTimeout(() => {
+          toast.classList.remove("opacity-100");
+          toast.classList.add("opacity-0");
+        }, 5000);
+      }
+    }
   });
-  </script>
-  
+</script>
+
 {% endblock %}

@@ -33,6 +33,8 @@ class Product(models.Model):
         ('blue',  'Blue'),
         ('black', 'Black'),
         ('orange', 'Orange'),
+        ('pink', 'Pink'),
+        ('beige', 'Beige')
         
     ]
     
