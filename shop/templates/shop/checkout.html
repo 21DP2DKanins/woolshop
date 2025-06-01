@@ -42,9 +42,20 @@
 
   <h3 class="text-xl font-semibold mt-8 mb-4">Card Payment</h3>
   <div class="grid gap-4">
-    <input class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" type="text" placeholder="Card Number" required>
-    <input class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" type="text" placeholder="Expiry Date (MM/YY)" required>
-    <input class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-black" type="text" placeholder="CVV" required>
+    <div>
+      <input id="card-number" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black" type="text" placeholder="Card Number" required>
+      <p id="error-card-number" class="text-red-500 text-sm mt-1 hidden"></p>
+    </div>
+  
+    <div>
+      <input id="card-expiry" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black" type="text" placeholder="Expiry Date (MM/YY)" required>
+      <p id="error-card-expiry" class="text-red-500 text-sm mt-1 hidden"></p>
+    </div>
+  
+    <div>
+      <input id="card-cvv" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white text-black" type="text" placeholder="CVV" required>
+      <p id="error-card-cvv" class="text-red-500 text-sm mt-1 hidden"></p>
+    </div>
   </div>
 
   <input type="hidden" name="cart_json" id="cart-json-input">
@@ -53,4 +64,56 @@
 </form>
 
 </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+  
+    const fields = {
+      number: {
+        input: document.getElementById("card-number"),
+        error: document.getElementById("error-card-number"),
+        validate: val => /^\d{16}$/.test(val.replace(/\s+/g, '')),
+        message: "Card number must be 16 digits."
+      },
+      expiry: {
+        input: document.getElementById("card-expiry"),
+        error: document.getElementById("error-card-expiry"),
+        validate: val => /^(0[1-9]|1[0-2])\/\d{2}$/.test(val),
+        message: "Expiry must be in MM/YY format."
+      },
+      cvv: {
+        input: document.getElementById("card-cvv"),
+        error: document.getElementById("error-card-cvv"),
+        validate: val => /^\d{3,4}$/.test(val),
+        message: "CVV must be 3 or 4 digits."
+      }
+    };
+  
+    form.addEventListener("submit", function (e) {
+      let hasErrors = false;
+  
+      for (const key in fields) {
+        const field = fields[key];
+        const value = field.input.value.trim();
+  
+        if (!field.validate(value)) {
+          field.error.textContent = field.message;
+          field.error.classList.remove("hidden");
+          field.input.classList.add("border-red-500");
+          hasErrors = true;
+        } else {
+          field.error.textContent = "";
+          field.error.classList.add("hidden");
+          field.input.classList.remove("border-red-500");
+        }
+      }
+  
+      if (hasErrors) {
+        e.preventDefault();
+      }
+    });
+  });
+  </script>
+  
 {% endblock %}

@@ -38,8 +38,8 @@ class CustomUserAdmin(BaseUserAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'stock', 'color', 'size', 'created_at')
-    list_filter = ('color', 'size', 'created_at')
+    list_display = ('id', 'name', 'price', 'created_at')
+    list_filter = ('created_at',)
     search_fields = ('name', 'description')
 
 
@@ -86,7 +86,7 @@ class ContactMessageAdmin(admin.ModelAdmin):
 
 @admin.register(ProductVariant)
 class ProductVariantAdmin(admin.ModelAdmin):
-    list_display = ['product', 'color', 'size', 'stock']
+    list_display = ['id', 'product', 'color', 'size', 'stock']
     list_filter = ['color', 'size', 'product']
     search_fields = ['product__name']
 

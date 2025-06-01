@@ -55,7 +55,7 @@ def home(request):
     },
     
     ],
-    products = Product.objects.all()[:3]
+    products = Product.objects.all().prefetch_related('variants').distinct()[:3]
 
     return render(request, 'shop/home.html', {
         'features': features,
@@ -64,7 +64,7 @@ def home(request):
     })
 
 def index(request):
-    products = Product.objects.all()
+    products = Product.objects.all().prefetch_related('variants').distinct()
     return render(request, 'shop/index.html', {'products': products})
 
 
@@ -73,7 +73,8 @@ from django.shortcuts import render, get_object_or_404
 from .models import Product
 
 def collection(request):
-    qs = Product.objects.all().prefetch_related('variants', 'category')
+    qs = Product.objects.all().prefetch_related('variants', 'category').distinct()
+
 
     category_slugs = request.GET.getlist('category')
     if category_slugs:
@@ -139,19 +140,22 @@ def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     variants = list(product.variants.all())
 
-    # Составим список уникальных кодов и меток
+
     choice_map = dict(product.COLOR_CHOICES)
     available_colors = []
     for v in variants:
         code = v.color
-        label = choice_map.get(code, code)  # если кода нет в COLOR_CHOICES — берем сам код
-        if code not in [c for c,_ in available_colors]:
+        label = choice_map.get(code, code)
+        if code not in [c for c, _ in available_colors]:
             available_colors.append((code, label))
+
+    is_available = any(v.stock > 0 for v in variants)
 
     return render(request, 'shop/product_detail.html', {
         'product': product,
         'variants': variants,
         'available_colors': available_colors,
+        'is_available': is_available,
     })
 
 def cart_view(request):
@@ -426,19 +430,39 @@ def checkout_view(request):
             order.save()
 
             for item in cart:
+                quantity = item.get('quantity', 1)
+                variant_id = item.get('variantId')
+
+                # Получаем нужный вариант
+                variant = ProductVariant.objects.filter(id=variant_id).select_related('product').first()
+                if not variant:
+                    continue
+
+                # Создаём OrderItem
                 OrderItem.objects.create(
                     order=order,
-                    product_name=item.get('name'),
+                    product_name=f"{variant.product.name} ({variant.color}/{variant.size})",
                     price=item.get('price'),
-                    quantity=item.get('quantity')
+                    quantity=quantity
                 )
 
-            
+                # Уменьшаем stock
+                variant.stock = max(variant.stock - quantity, 0)
+                variant.save()
+
             request.session.pop('cart', None)
-            sessionStorage = request.session  
             return render(request, 'shop/checkout_success.html', {'order': order})
+    
     else:
-        form = OrderCreateForm()
+        ###
+        initial_data = {}
+        if request.user.is_authenticated:
+            initial_data = {
+                'full_name': f"{request.user.first_name} {request.user.last_name}",
+                'email': request.user.email,
+            }
+
+        form = OrderCreateForm(initial=initial_data)
         cart = json.loads(request.session.get('cart', '[]'))
         subtotal = sum(i.get('price', 0) * i.get('quantity', 1) for i in cart)
         total = subtotal
@@ -448,6 +472,7 @@ def checkout_view(request):
         'cart': cart,
         'totals': {'subtotal': subtotal, 'total': total},
     })
+
 
 from .models import Review
 from .forms import ReviewForm

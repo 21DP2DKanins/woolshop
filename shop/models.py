@@ -21,9 +21,8 @@ class Category(models.Model):
 class Product(models.Model):
     name        = models.CharField(max_length=200, verbose_name="Name")
     description = models.TextField(blank=True, verbose_name="Description")
-    price       = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price, ₽")
+    price       = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Price, €")
     image       = models.ImageField(upload_to='products/%Y/%m/%d/', blank=True, null=True, verbose_name="Image")
-    stock       = models.PositiveIntegerField(default=0, verbose_name="Stock")
     created_at  = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
     updated_at  = models.DateTimeField(auto_now=True, verbose_name="Updated at")
 
@@ -36,12 +35,7 @@ class Product(models.Model):
         ('orange', 'Orange'),
         
     ]
-    color = models.CharField(
-        max_length=20,
-        choices=COLOR_CHOICES,
-        default='red',
-        verbose_name="Color"
-    )
+    
 
     SIZE_CHOICES = [
         ('S',  'S'),
@@ -50,12 +44,7 @@ class Product(models.Model):
         ('XL', 'XL'),
         
     ]
-    size = models.CharField(
-        max_length=5,
-        choices=SIZE_CHOICES,
-        default='M',
-        verbose_name="Size"
-    )
+    
 
     category = models.ForeignKey(
         'Category',

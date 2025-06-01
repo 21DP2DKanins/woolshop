@@ -54,9 +54,15 @@
         </div>
 
         <button type="submit"
-                id="add-to-cart-btn"
-                class="w-full btn-primary disabled:opacity-50"
-                disabled>Add to cart</button>
+        id="add-to-cart-btn"
+        class="w-full py-3 text-white font-semibold rounded-md transition duration-300 bg-blue-600 disabled:bg-gray-400 disabled:text-white disabled:cursor-not-allowed"
+        disabled>
+        Add to cart
+        </button>
+
+                
+        
+
 
         <div class="mt-6 text-gray-700 text-sm">
           <strong>Description:</strong>
@@ -68,7 +74,8 @@
 </div>
 
 <!-- Toast Notification -->
-<div id="toast-success" class="fixed top-6 right-6 z-50 flex items-center w-full max-w-xs p-4 text-green-800 bg-green-100 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out opacity-0 pointer-events-none">
+<div id="toast-success"
+     class="fixed bottom-6 right-6 z-50 flex items-center w-full max-w-xs p-4 text-green-800 bg-green-100 rounded-lg shadow-lg transition-opacity duration-500 ease-in-out opacity-0 pointer-events-none">
   <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11.414l-3.293 3.293-1.293-1.293-1.414 1.414 2.707 2.707 4.707-4.707-1.414-1.414z" clip-rule="evenodd"/>
   </svg>
@@ -125,17 +132,29 @@ document.addEventListener('DOMContentLoaded', () => {
       addBtn.disabled = true;
       return;
     }
+  
     const sel = variants.find(v =>
       v.color === colorSelect.value && v.size === sizeSelect.value
     );
+  
     currentStock = sel.stock;
     currentVid   = sel.id;
-    stockCount.textContent = currentStock;
     stockInfo.style.display = 'block';
-    qtyInput.max = currentStock;
-    qtyInput.value = 1;
-    qtyInput.disabled = false;
-    addBtn.disabled = false;
+    stockCount.textContent = currentStock > 0 ? currentStock : 'Out of stock';
+  
+    if (currentStock === 0) {
+      qtyInput.disabled = true;
+      addBtn.disabled = true;
+      addBtn.classList.add('bg-gray-400', 'text-gray-300', 'cursor-not-allowed');
+      addBtn.classList.remove('btn-primary');
+    } else {
+      qtyInput.disabled = false;
+      qtyInput.max = currentStock;
+      qtyInput.value = 1;
+      addBtn.disabled = false;
+      addBtn.classList.remove('bg-gray-400', 'text-gray-300', 'cursor-not-allowed');
+      addBtn.classList.add('btn-primary');
+    }
   });
 
   decBtn.addEventListener('click', () => {
@@ -161,6 +180,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('add-to-cart-form').addEventListener('submit', e => {
     e.preventDefault();
+
+    if (currentStock === 0) {
+      showErrorToast(); 
+      return;
+    }
+
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     const item = {
       productId: {{ product.id }},
